@@ -13,12 +13,13 @@ class BattleShip:
     def attack(self):
         x = random.randint(0,1)
         y = random.randint(0,3)
-        print("TEAM 1 : " ,self.info)
         return (x,y)
 
     def hit_or_miss(self, x, y , info):
         self.info = info
-        self.opponent_board[x][y] = info
+        ## info = 1 for miss, 0 for a hit, -1 for an out of range shooting
+        if info != -1 and info == 0:
+            self.opponent_board[x][y] = info
 
 
 
