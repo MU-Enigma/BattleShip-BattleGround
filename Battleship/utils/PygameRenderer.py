@@ -177,8 +177,13 @@ def initialize():
     cell_size = [max_board_dim[0]/board_elem_dim[0],
                  max_board_dim[1]/board_elem_dim[1]]
 
-def draw_call():
-    global screen, running, clock
+
+
+def draw_call(b1, b2):
+    global board1, board2
+    board1 = b1
+    board2 = b2
+    global screen, running, clock, count
     render()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
