@@ -9,8 +9,8 @@ for board matrix use the following convention:
 """
 
 pr.max_board_dim = [400, 400]
-pr.side_column_width = 0
-pr.leaderboard_height = 0
+pr.side_column_width = 100
+pr.leaderboard_height = 200
 
 # Can override margins/thickness here
 
