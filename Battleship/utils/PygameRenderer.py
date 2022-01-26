@@ -1,3 +1,4 @@
+import positionCalculators
 import pygame
 import os
 
@@ -13,7 +14,7 @@ OnBoardPath = "../Assets/OnBoard/"
 tiles = {}
 
 #Window Control variables
-window_size = [800, 600]
+window_size = [1600, 800]
 window_caption = "Battleship-BattleGround"
 FPS=75
 BackgroundColorRGB = [15, 0, 0]  # [15, 250, 190]
@@ -23,10 +24,16 @@ running = True
 screen = pygame.display.set_mode(window_size)
 clock = pygame.time.Clock()
 
+
 side_column_dimensions = []
 leaderboard_dimensions = []
 board_elem_dim = []
 cell_size = []
+
+
+
+shi1 = []  # Each ship will be stored as [position, rotation]
+shi2 = []
 
 # Control Variables
 team1_info = None
@@ -34,16 +41,12 @@ team2_info = None
 leaderboard_info = None
 drawgrid = True
 
-board1 = [[0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 1, 1, 1, 0, 0, 1, 0],
-          [0, 1, 1, 1, 0, 0, 1, 0],
-          [0, 0, 0, 0, 0, 0, 1, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0]]
-board2 = [[0, 0, 0, 0, 0, 0, 0, 0],
-          [1, 1, 1, 1, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0]]
+board1 = []
+board2 = []
+ships1 = []
+ships2 = []
+
+onetimecalculations = True
 
 """
 board nums:
@@ -55,17 +58,19 @@ board nums:
 # Draw Variables
 board_margin = 10
 max_board_dim = []
-grid_line_color = [192,192,192]
+grid_line_color = [192, 192, 192]
 
 side_column_margin = 10
 side_column_width = 0
-side_column_background_color = [192,192,192]
+side_column_background_color = [192, 192, 192]
 
 leaderboard_margin = 10
 leaderboard_height = 0
-leaderboard_background_color = [192,192,192]
+leaderboard_background_color = [192, 192, 192]
 
 divider_line_thickness = 5
+
+turrent_cell_size = 45 # good ratio: 400:45 (board size to turrent_cell_size)
 
 cell_colors = [ #Temporarily representing ships as flat colors
     [15, 0, 0],  # water color
@@ -131,12 +136,17 @@ def render_board(pos, board):
                                                                            cell_size[index],
                                                                            cell_size[index]))"""
 
+
             cell_pos = [pos[0]+(x * cell_size[index]), pos[1]+(y * cell_size[index])]
             if x != board_elem_dim[0] and y != board_elem_dim[1]:
                 if board[y][x] == 1:
                     screen.blit(tiles[nomenclature(board, (x, y))], cell_pos)
 
             #TODO: draw turrents here.
+
+            for ship in shi1:
+                surf = pygame.transform.rotate(tiles['GunTurrent1'], ship[1])
+                screen.blit(surf, ship[0])
 
     # Must shift pos-y, pos-x depending on lesser size.
     # Drawing Grid Lines, can compute and store intersection map for speed gains here.
@@ -227,13 +237,33 @@ def initialize():
 
     index = min(cell_size)
 
+    assert turrent_cell_size < cell_size[index]  # Ensuring turrents are smaller than ship size.
+
     # Loading tiles
     load_tiles(tilepath1)
     load_tiles(tilepath2)
 
-    # Resize imported assets
+    # Resize imported tiles
     for key in tiles.keys():
         tiles[key] = pygame.transform.scale(tiles[key], [int(cell_size[index]), int(cell_size[index])])
+
+    # Loading Guns
+    load_tiles(OnBoardPath)
+
+    # Resizing Guns
+    tiles['GunTurrent1'] = pygame.transform.scale(tiles['GunTurrent1'], (turrent_cell_size, turrent_cell_size))
+
+    # Calculating Turrent Positions
+    # center of turrents will be at the center of ships.
+    shipos1 = positionCalculators.calculateShipPositions(ships1, cell_size[index], [side_column_width+(side_column_margin*2)+board_margin, board_margin], turrent_cell_size)
+    shipos2 = positionCalculators.calculateShipPositions(ships2, cell_size[index], [window_size[0]-(side_column_width+(side_column_margin*2)+board_margin+max_board_dim[0]), board_margin], turrent_cell_size)
+
+    for shipos in shipos1:
+        shi1.append([shipos, 0])
+
+    for shipos in shipos2:
+        shi2.append([shipos, 180])
+
 
 
 def draw_call():

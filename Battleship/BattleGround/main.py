@@ -1,6 +1,6 @@
 from itertools import chain
 import time
-from ..utils import RenderTest as animation
+from ..utils import RenderInterface as animation
 from ..example_submission import team1
 from ..example_submission import team2
 
