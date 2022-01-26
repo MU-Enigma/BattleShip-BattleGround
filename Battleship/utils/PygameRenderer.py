@@ -1,7 +1,15 @@
 import pygame
+import os
 
 pygame.init()
 pygame.display.init()
+
+#Loading Resources
+
+tilepath1 = "../Assets/1/"
+tilepath2 = "../Assets/2/"
+
+tiles = {}
 
 #Window Control variables
 window_size = [800, 600]
@@ -83,16 +91,33 @@ def render_leaderboard(pos):
     #TODO: Write stuff to render/visualize data related to the leaderboard/scoresheet
 
 
+def printmat(matrix):
+    for row in matrix:
+        print(row)
+
+
+
 def render_board(pos, board):
     index = min(cell_size)
 
     # Drawing cells
     for x in range(board_elem_dim[0]):
         for y in range(board_elem_dim[1]):
-            pygame.draw.rect(screen, cell_colors[board[y][x]], pygame.Rect(pos[0]+(x * cell_size[index]),
+            """pygame.draw.rect(screen, cell_colors[board[y][x]], pygame.Rect(pos[0]+(x * cell_size[index]),
                                                                            pos[1]+(y * cell_size[index]),
                                                                            cell_size[index],
-                                                                           cell_size[index]))
+                                                                           cell_size[index]))"""
+
+
+            #Keeping it sexy by seperating tileset 1 and tileset 2
+
+            #Tileset 1 ifs
+
+
+            #Tileset 2 ifs
+
+
+            screen.blit(tiles['body'], [pos[0]+(x * cell_size[index]), pos[1]+(y * cell_size[index])])
 
     # Must shift pos-y, pos-x depending on lesser size.
     # Drawing Grid Lines, can compute and store intersection map for speed gains here.
@@ -145,10 +170,14 @@ def render():
     render_board([window_size[0]-(side_column_width+(side_column_margin*2)+board_margin+max_board_dim[0]),
                   board_margin], board2)
 
+def load_tiles(tilepath):
+    for name in os.listdir(tilepath):
+        tiles[os.path.splitext(name)[0]] = pygame.image.load(tilepath+str(name))
+
 def initialize():
     # Only run after updating above variables to your preferences.
 
-    global screen, window_size, side_column_dimensions, leaderboard_dimensions, board_elem_dim, cell_size
+    global screen, window_size, side_column_dimensions, leaderboard_dimensions, board_elem_dim, cell_size, tiles
 
     #TODO: Add assertions here to ensure non-negative dimension values
 
@@ -177,6 +206,19 @@ def initialize():
     cell_size = [max_board_dim[0]/board_elem_dim[0],
                  max_board_dim[1]/board_elem_dim[1]]
 
+    index = min(cell_size)
+
+    # Loading tiles
+    load_tiles(tilepath1)
+    load_tiles(tilepath2)
+
+    # Resize imported assets
+    for key in tiles.keys():
+        tiles[key] = pygame.transform.scale(tiles[key], [int(cell_size[index]), int(cell_size[index])])
+
+
+def draw_call():
+    global screen, running, clock
 
 
 def draw_call(b1, b2):

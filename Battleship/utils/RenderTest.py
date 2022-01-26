@@ -1,4 +1,4 @@
-from . import PygameRenderer as pr
+import PygameRenderer as pr
 
 """
 for board matrix use the following convention:
@@ -9,11 +9,13 @@ for board matrix use the following convention:
 """
 
 pr.max_board_dim = [400, 400]
-pr.side_column_width = 100
-pr.leaderboard_height = 200
+pr.side_column_width = 0
+pr.leaderboard_height = 0
 
 # Can override margins/thickness here
 
+
+pr.initialize()
 board1 = []
 board2 = []
 
@@ -33,3 +35,5 @@ def update(b1, b2):
 def run():
     while pr.running:
         pr.draw_call(pr.board1, pr.board2)
+
+run()
