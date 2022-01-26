@@ -8,6 +8,7 @@ pygame.display.init()
 
 tilepath1 = "../Assets/1/"
 tilepath2 = "../Assets/2/"
+OnBoardPath = "../Assets/OnBoard/"
 
 tiles = {}
 
@@ -15,7 +16,7 @@ tiles = {}
 window_size = [800, 600]
 window_caption = "Battleship-BattleGround"
 FPS=75
-BackgroundColorRGB = [15, 0, 0]
+BackgroundColorRGB = [15, 0, 0]  # [15, 250, 190]
 
 # Runtime Variables
 running = True
@@ -31,13 +32,18 @@ cell_size = []
 team1_info = None
 team2_info = None
 leaderboard_info = None
+drawgrid = True
 
-board1 = [[0, 0, 0, 0],
-          [0, 1, 1, 1],
-          [0, 1, 1, 1]]
-board2 = [[0, 0, 0, 0],
-          [1, 1, 1, 1],
-          [0, 0, 0, 0]]
+board1 = [[0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 1, 1, 1, 0, 0, 1, 0],
+          [0, 1, 1, 1, 0, 0, 1, 0],
+          [0, 0, 0, 0, 0, 0, 1, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0]]
+board2 = [[0, 0, 0, 0, 0, 0, 0, 0],
+          [1, 1, 1, 1, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0]]
 
 """
 board nums:
@@ -124,26 +130,31 @@ def render_board(pos, board):
                                                                            pos[1]+(y * cell_size[index]),
                                                                            cell_size[index],
                                                                            cell_size[index]))"""
+
+            cell_pos = [pos[0]+(x * cell_size[index]), pos[1]+(y * cell_size[index])]
             if x != board_elem_dim[0] and y != board_elem_dim[1]:
                 if board[y][x] == 1:
-                    screen.blit(tiles[nomenclature(board, (x, y))], [pos[0]+(x * cell_size[index]), pos[1]+(y * cell_size[index])])
+                    screen.blit(tiles[nomenclature(board, (x, y))], cell_pos)
 
+            #TODO: draw turrents here.
 
     # Must shift pos-y, pos-x depending on lesser size.
     # Drawing Grid Lines, can compute and store intersection map for speed gains here.
-    for x in range(board_elem_dim[0]):
-        if x != 0:
-            pygame.draw.line(screen,
-                             grid_line_color,
-                             (pos[0]+(x*cell_size[index]), pos[1]),
-                             (pos[0]+(x*cell_size[index]), pos[1]+(board_elem_dim[1]*cell_size[index])))
 
-    for y in range(board_elem_dim[1]):
-        if y != 0:
-            pygame.draw.line(screen,
-                             grid_line_color,
-                             (pos[0], pos[1]+(y*cell_size[index])),
-                             (pos[0]+(board_elem_dim[0]*cell_size[index]), pos[1]+(y*cell_size[index])))
+    if drawgrid:
+        for x in range(board_elem_dim[0]):
+            if x != 0:
+                pygame.draw.line(screen,
+                                 grid_line_color,
+                                 (pos[0]+(x*cell_size[index]), pos[1]),
+                                 (pos[0]+(x*cell_size[index]), pos[1]+(board_elem_dim[1]*cell_size[index])))
+
+        for y in range(board_elem_dim[1]):
+            if y != 0:
+                pygame.draw.line(screen,
+                                 grid_line_color,
+                                 (pos[0], pos[1]+(y*cell_size[index])),
+                                 (pos[0]+(board_elem_dim[0]*cell_size[index]), pos[1]+(y*cell_size[index])))
 
 
 def render():
