@@ -1,4 +1,4 @@
 1] Set up specific tiles that update with surrounding tiles
 2] Set up basic missile animation projectile that moves from ship1 to ship2
-
-3] Setup middle man to take in pygame surface/ image matrix and perform shit
+3] Setup middle man to take in pygame surface/ image matrix and perform particle simulations and re-render pygame surface
+4]

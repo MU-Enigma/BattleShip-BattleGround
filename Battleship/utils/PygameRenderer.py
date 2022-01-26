@@ -33,11 +33,18 @@ team2_info = None
 leaderboard_info = None
 
 board1 = [[0, 0, 0, 0],
-          [1, 1, 1, 1],
-          [0, 0, 0, 0]]
+          [0, 1, 1, 1],
+          [0, 1, 1, 1]]
 board2 = [[0, 0, 0, 0],
           [1, 1, 1, 1],
-          [0, 1, 0, 0]]
+          [0, 0, 0, 0]]
+
+"""
+board nums:
+0 - water
+1 - ship part
+2 - destroyed ship part
+"""
 
 # Draw Variables
 board_margin = 10
@@ -91,10 +98,20 @@ def render_leaderboard(pos):
     #TODO: Write stuff to render/visualize data related to the leaderboard/scoresheet
 
 
-def printmat(matrix):
-    for row in matrix:
-        print(row)
+def nomenclature(board, pos):
+    s_tiles = []
 
+    for y in range(3):
+        for x in range(3):
+            index_x = pos[0]-1+x
+            index_y = pos[1]-1+y
+            if index_x < 0 or index_y < 0 or index_x > len(board[0])-1 or index_y > len(board)-1:
+                s_tiles.append(0)
+            else:
+                s_tiles.append(board[index_y][index_x])
+
+    # top, left, right, bottom
+    return str(s_tiles[1]) + str(s_tiles[3]) + str(s_tiles[5]) + str(s_tiles[7])
 
 
 def render_board(pos, board):
@@ -107,17 +124,10 @@ def render_board(pos, board):
                                                                            pos[1]+(y * cell_size[index]),
                                                                            cell_size[index],
                                                                            cell_size[index]))"""
+            if x != board_elem_dim[0] and y != board_elem_dim[1]:
+                if board[y][x] == 1:
+                    screen.blit(tiles[nomenclature(board, (x, y))], [pos[0]+(x * cell_size[index]), pos[1]+(y * cell_size[index])])
 
-
-            #Keeping it sexy by seperating tileset 1 and tileset 2
-
-            #Tileset 1 ifs
-
-
-            #Tileset 2 ifs
-
-
-            screen.blit(tiles['body'], [pos[0]+(x * cell_size[index]), pos[1]+(y * cell_size[index])])
 
     # Must shift pos-y, pos-x depending on lesser size.
     # Drawing Grid Lines, can compute and store intersection map for speed gains here.
@@ -134,8 +144,6 @@ def render_board(pos, board):
                              grid_line_color,
                              (pos[0], pos[1]+(y*cell_size[index])),
                              (pos[0]+(board_elem_dim[0]*cell_size[index]), pos[1]+(y*cell_size[index])))
-
-
 
 
 def render():
@@ -218,13 +226,6 @@ def initialize():
 
 
 def draw_call():
-    global screen, running, clock
-
-
-def draw_call(b1, b2):
-    global board1, board2
-    board1 = b1
-    board2 = b2
     global screen, running, clock, count
     render()
     for event in pygame.event.get():
@@ -232,4 +233,6 @@ def draw_call(b1, b2):
             running = False
     pygame.display.update()
     clock.tick(FPS)
+
+
 
