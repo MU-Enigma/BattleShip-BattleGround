@@ -426,7 +426,6 @@ def draw_call(animation_instruction):
     #    animation_handler(animation_instruction)
 
     bullet1over = False
-    preframes = 0
 
     board1_pos = [side_column_width + (side_column_margin * 2) + board_margin, board_margin]
     board2_pos = [window_size[0] - (side_column_width + (side_column_margin * 2) + board_margin + max_board_dim[0]),
@@ -438,49 +437,47 @@ def draw_call(animation_instruction):
 
     while True:
         render()
-        if preframes > 100:
-            if not bullet1over:
-                if not bullets[0].animated and not bullets[1].animated:
+        if not bullet1over:
+            if not bullets[0].animated and not bullets[1].animated:
+                bullet_image = tiles['Explosion']
+                bullet1over = True
+                """
+                if frames > 0 and frames < FPS*0.5*dT:
                     bullet_image = tiles['Explosion']
-                    bullet1over = True
-                    """
-                    if frames > 0 and frames < FPS*0.5*dT:
-                        bullet_image = tiles['Explosion']
-                    elif frames > FPS*0.5*dT and frames < FPS*0.525*dT:
-                        bullet_image = tiles['ExplosionLarge']
-                    else:
-                        bullet_image = tiles['0010B']
-                        bullet1over = True
-                        #board2[1][3] = 0"""
-
-
-            if bullet1over:
-                if shoot:
-                    bullet2[0].animate(board1_pos[0]+cell_size[cell_size_index]*6, bullet_velocity)
-                    bullet2[1].animate(board1_pos[1]+cell_size[cell_size_index]*8, bullet_velocity)
-                    shoot = False
+                elif frames > FPS*0.5*dT and frames < FPS*0.525*dT:
+                    bullet_image = tiles['ExplosionLarge']
                 else:
-                    if not bullet2[0].animated and not bullet2[1].animated and not setzero:
-                        frames = 0
-                        setzero = True
-                    if setzero:
+                    bullet_image = tiles['0010B']
+                    bullet1over = True
+                    #board2[1][3] = 0"""
+
+
+        if bullet1over:
+            if shoot:
+                bullet2[0].animate(board1_pos[0]+cell_size[cell_size_index]*6, bullet_velocity)
+                bullet2[1].animate(board1_pos[1]+cell_size[cell_size_index]*8, bullet_velocity)
+                shoot = False
+            else:
+                if not bullet2[0].animated and not bullet2[1].animated and not setzero:
+                    frames = 0
+                    setzero = True
+                if setzero:
+                    bullet2_image = tiles['Explosion']
+                    """
+                    if frames > 0 and frames < FPS * 0.5 * dT:
                         bullet2_image = tiles['Explosion']
-                        """
-                        if frames > 0 and frames < FPS * 0.5 * dT:
-                            bullet2_image = tiles['Explosion']
-                        elif frames > FPS * 0.5 * dT and frames < FPS * 0.525 * dT:
-                            bullet2_image = tiles['ExplosionLarge']
-                        else:
-                            bullet2_image = tiles['0010B']"""
+                    elif frames > FPS * 0.5 * dT and frames < FPS * 0.525 * dT:
+                        bullet2_image = tiles['ExplosionLarge']
+                    else:
+                        bullet2_image = tiles['0010B']"""
 
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-            pygame.display.update()
-            clock.tick(FPS)
-            frames += 1
-        preframes += 1
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        pygame.display.update()
+        clock.tick(FPS)
+        frames += 1
 
 
 
