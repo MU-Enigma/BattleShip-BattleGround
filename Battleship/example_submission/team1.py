@@ -17,7 +17,7 @@ class BattleShip:
 
     def hit_or_miss(self, x, y , info):
         self.info = info
-        ## info = 1 for miss, 0 for a hit, -1 for an out of range shooting
+        ## info = 1 for miss, 0 for a hit, -1 for an out of range shooting, 2 for special move nullify. 3 for your next move to be a Hawkeye Shot
         if info != -1 and info == 0:
             self.opponent_board[x][y] = info
 

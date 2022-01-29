@@ -37,7 +37,7 @@
 7. The board is a 2D matrix of 1s and 0s. 
 
     How to Set Up Board : 
-    * There are 5 ships. One of size 2, two of size 3 , and two of size 4.
+    * There are 5 ships. One of size 3, two of size 4 , and two of size 5.
 
 
     * The presence of a ship is determined by 1s in the matrix. So, 
