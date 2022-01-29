@@ -1,7 +1,9 @@
 from itertools import chain
 import time
+from ..utils import RenderInterface as animation
 import random
 from ..utils import RenderTest as animation
+
 from ..example_submission import team1
 from ..example_submission import team2
 
