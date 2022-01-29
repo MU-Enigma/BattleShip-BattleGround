@@ -2,7 +2,7 @@ import math
 import random
 
 import positionCalculators
-from animator import animatedValue
+from animator import AnimatedValue, AnimationStateMachine
 import pygame
 import os
 
@@ -88,6 +88,7 @@ cell_colors = [ #Temporarily representing ships as flat colors
 
 
 # Animation Variables
+turrent_turn_time = 2
 
 
 def min(l):
@@ -294,10 +295,10 @@ def initialize():
     shipos2 = positionCalculators.calculateShipPositions(ships2, cell_size[index], [window_size[0]-(side_column_width+(side_column_margin*2)+board_margin+max_board_dim[0]), board_margin], turrent_cell_size)
 
     for shipos in shipos1:
-        shi1.append([shipos, animatedValue(0, FPS)])
+        shi1.append([shipos, AnimatedValue(0, FPS)])
 
     for shipos in shipos2:
-        shi2.append([shipos, animatedValue(180, FPS)])
+        shi2.append([shipos, AnimatedValue(180, FPS)])
 
 #Everything below is cheap AF (probably have to rewrite all the animation shit)
 
@@ -314,11 +315,64 @@ The final output screen can be animated by sequenctially and systematically chan
     
 """
 
+# ---------------------------------------Strike Animation Stuff--------------------------------------------------------
+
+def install_bullet():
+    print("schyitt boi!!!")
+
+def generateStrikeStateMachine(anim):
+    """
+    The strike will have the following states with the following animated values:
+        1]State 1:
+            1] Rotate the turrent:
+                1] turrent rotation
+        2]State 2: (termination function)
+            1] Put the bullet with appropriate rotation in the turrent:
+                1] bullet rotation
+                1] bullet position
+        3]State 3:
+            1] Launch the bullet, 2 things will be animated:
+                1] Bullet position -> target position
+                2] Bullet size (to emulate height)
+        4]State 4:
+            1] Screen Rumble
+            2] Exposure increases(becomes blinding)
+        5]State 5: (termination function)
+            1] update corresponding board
+            2] Reset bullet
+        6]State 6:
+            1] Screen Rumble
+            2] Exposure decreases(becomes imperceptible)
+
+    """
+
+    print(anim)
+    if anim[0] == 2:
+        turrent_no = random.randint(0, len(shi1)-1)
+
+        states = [
+            [
+                [[shi1[turrent_no][1], 90, turrent_turn_time]],
+                [install_bullet]
+            ]
+        ]
+
+        machine = AnimationStateMachine(states)
+
+    return machine
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 
 def animation_handler(anim_instruction):
-    global screen, running, clock, count, dT
+    global screen, running, clock, count, dT,in_animation
     dT = clock.tick(FPS) / 1000
+    if anim_instruction[0] == "strike":
+        machine = generateStrikeStateMachine(anim_instruction[1])
     while in_animation:
+        if machine.run():
+            in_animation = False
+            break
         render()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
