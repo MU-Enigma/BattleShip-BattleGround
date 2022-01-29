@@ -1,4 +1,4 @@
-## How to play : 
+# How to play : 
 
 1. Every team is required to submit a single python file
 
@@ -20,10 +20,10 @@
       * If info = 2, it means you have availed `Nullify` special Shot (More on Special Shot later)
       * If info = 3, it means you have availed `Missile Hawkeye Special Move`!
 
-4.  You may create additional member variables/global variables and functions. But the `above member functions/variables are neccesary` without which you are disqualified and your opponent gets a walk-over
+4.  You may create additional member variables/global variables and functions. But the `above member functions/variables are neccesary`.
 
-5.  You are not allowed to import any third party libraries or import from the main game file. You can only use libraries found in Vanilla Python. 
-      
+5.  You are **not allowed** to import any third party libraries or import from the main game file. You can only use libraries found in Vanilla Python. 
+
 6. Special Moves : 
 
     In your opponent's board, two randomly selected tile/co-ordinates will be assigned with special spot. The special spot are always in one of the ships. So, when you hit this special part of the ship, you get to use one of the following special moves : 
@@ -34,10 +34,46 @@
 
     Note : When you activate missile Hawkeye, the very next move is treated as your special attack.
 
-7. The board dimensions are 10x10. 
+7. The board is a 2D matrix of 1s and 0s. 
 
-8. The following link redirects you to a sample code that every team is expected to submit. [Click here](https://github.com/MU-Enigma/BattleShip-BattleGround/blob/master/Battleship/example_submission/team1.py).
+    How to Set Up Board : 
+    * There are 5 ships. One of size 2, two of size 3 , and two of size 4.
+
+
+    * The presence of a ship is determined by 1s in the matrix. So, 
+    ```
+    board = [
+        [1,1,1],
+        [0,0,0],
+        [1,1,1]
+    ]
+    ```
+     means there are two ship of size 3 at the first row and last row. 
+
+    * The ships cannot be placed diagonally, but can be placed horizontally and Vertically only. Note that the ships cannot overlap!
+
+    ```
+    board = [
+        [1,0,0],
+        [0,1,0],
+        [0,0,1]
+    ]
+
+    OR 
+
+    board = [
+        [1,0,0],
+        [0,0,1],
+        [1,0,0]
+    ]
+    ```
+    are not a valid ship position of a ship!
+
+
+
+8. The following link redirects you to a sample code that every team is expected to submit. Check out the valid board settings! [Click here for 1st example code](https://github.com/MU-Enigma/BattleShip-BattleGround/blob/master/Battleship/example_submission/team1.py). [Click here for 2nd example code](https://github.com/MU-Enigma/BattleShip-BattleGround/blob/master/Battleship/example_submission/team2.py). 
 You may use the same as a boiler plate for your code submission.
+
 
 9. Know more about the classic [BattleShip Game](https://www.youtube.com/watch?v=RY4nAyRgkLo)
 
