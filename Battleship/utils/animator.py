@@ -5,7 +5,9 @@ class AnimatedValue:
         self.val = initial_value
         self.animated = False
         self.increment = 0
+        self.target = 0
         self.FPS = FPS
+        self.tick = 0
 
     def animate(self, target_value, duration):
         self.animated = True
@@ -14,11 +16,14 @@ class AnimatedValue:
 
     def __call__(self, dT=1):
         if self.animated:
-            if self.target-self.val < self.increment*dT:
+            if abs(self.target-self.val) < abs(self.increment*dT):
                 self.increment = 0
                 self.animated = False
-                self.val=self.target
+                self.val = self.target
             self.val += self.increment*dT
+
+
+        self.tick += 1
         return self.val
 
 

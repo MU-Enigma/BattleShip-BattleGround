@@ -10,7 +10,7 @@ for board matrix use the following convention:
 """
 
 pr.max_board_dim = [800, 800]
-pr.side_column_width = 0
+pr.side_column_width = 100
 pr.leaderboard_height = 0
 
 # Can override margins/thickness here
@@ -24,45 +24,47 @@ initial_skirting = 0.5
 
 
 # Dummy Values for testing purposes
-board1 = [[0, 0, 0, 0, 0, 0, 1, 0],
-          [0, 1, 1, 1, 0, 0, 1, 0],
-          [0, 0, 0, 0, 0, 0, 1, 0],
-          [0, 0, 0, 1, 1, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0]]
 
-board2 = [[0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 1, 0, 0, 0],
-          [1, 1, 1, 0, 1, 0, 0, 0],
-          [1, 1, 1, 0, 1, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 1, 1]]
+board1 = [ [ 0 for i in range(10) ] for j in range(10) ]
+board2 = [ [ 0 for i in range(10) ] for j in range(10) ]
 
+board1[2][3] = 1
+board1[2][4] = 1
+board1[2][5] = 1
 
-board1_ships = [
-    [1, 1, 0, 3, 1], # ship entry format: [board_pos_x, board_pos_y, orientation (right(0) or horizontal, down(-1) or vertical), size_x (in board units not pixels), size_y]
-    [6, 0, -1, 1, 3],
-    [3, 3, 0, 2, 1]
-]
-board2_ships = [
-    [4, 1, -1, 1, 3],
-    [0, 2, 0, 3, 2],
-    [6, 4, 0, 2, 1]
-]
+board1[5][2] = 1
+board1[5][3] = 1
+board1[5][4] = 1
 
+board1[8][6] = 1
+board1[8][7] = 1
+board1[8][8] = 1
 
+board2[4][4] = 1
+board2[4][5] = 1
+board2[4][6] = 1
 
-def initialize(Board1_ships, Board2_ships):
+board2[7][6] = 1
+board2[7][7] = 1
+board2[7][8] = 1
+
+board2[1][3] = 1
+board2[1][4] = 1
+board2[1][5] = 1
+
+def initialize():
     # Make sure ship lists are legal.
     pr.board1 = board1
     pr.board2 = board2
-    pr.ships1 = Board1_ships
-    pr.ships2 = Board2_ships
+    pr.ships1 = [[3, 2, 0, 3, 1],
+                 [2, 5, 0, 3, 1],
+                 [6, 8, 0, 3, 1]]
+    pr.ships2 = [[4, 4, 0, 3, 1],
+                 [6, 7, 0, 3, 1],
+                 [3, 1, 0, 3, 1]]
     pr.initialize()
 
 
-initialize(board1_ships, board2_ships)
+initialize()
 while pr.running:
-    time_elapsed = time.time()-start_time
-    if time_elapsed < initial_skirting:
-        pr.draw_call([None, None])
-    else:
-        pr.draw_call(['strike', [2, 2, 2]]) # strike animation takes board_num, board_pos_x, board_pos_y
+    pr.draw_call([None, None])
