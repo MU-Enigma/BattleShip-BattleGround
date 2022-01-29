@@ -88,7 +88,7 @@ cell_colors = [ #Temporarily representing ships as flat colors
 
 
 # Animation Variables
-turrent_turn_time = 2
+turrent_turn_time = 0.5
 
 
 def min(l):
@@ -318,7 +318,7 @@ The final output screen can be animated by sequenctially and systematically chan
 # ---------------------------------------Strike Animation Stuff--------------------------------------------------------
 
 def install_bullet():
-    print("schyitt boi!!!")
+    pass
 
 def generateStrikeStateMachine(anim):
     """
@@ -346,13 +346,29 @@ def generateStrikeStateMachine(anim):
 
     """
 
-    print(anim)
+
+
     if anim[0] == 2:
-        turrent_no = random.randint(0, len(shi1)-1)
+
+        #turrent_no = random.randint(0, len(shi1)-1)
+        turrent_no = 0
+
+        target_position = [
+            window_size[0] - (side_column_width + (side_column_margin * 2) + board_margin + max_board_dim[0]),
+            board_margin]
+        target_angle = math.atan((-target_position[1] + shi1[turrent_no][0][1])/(target_position[0] - shi1[turrent_no][0][0]))
+        target_angle *= 180/math.pi
+
+        print(target_angle)
+
+        if target_angle < 0:
+            target_angle += 360
+
+        print(target_angle)
 
         states = [
             [
-                [[shi1[turrent_no][1], 90, turrent_turn_time]],
+                [[shi1[turrent_no][1], target_angle, turrent_turn_time]],
                 [install_bullet]
             ]
         ]
@@ -367,8 +383,10 @@ def generateStrikeStateMachine(anim):
 def animation_handler(anim_instruction):
     global screen, running, clock, count, dT,in_animation
     dT = clock.tick(FPS) / 1000
+
     if anim_instruction[0] == "strike":
         machine = generateStrikeStateMachine(anim_instruction[1])
+    #shi1[0][1].animate(90, turrent_turn_time)
     while in_animation:
         if machine.run():
             in_animation = False

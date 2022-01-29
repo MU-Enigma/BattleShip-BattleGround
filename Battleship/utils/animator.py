@@ -56,6 +56,7 @@ class AnimationStateMachine:
         if not self.curr_initialize:
             for action in state[0]:
                 action[0].animate(action[1], action[2])
+            self.curr_initialize = True
 
         if self.is_complete(state[0]):
             self.curr_state += 1
