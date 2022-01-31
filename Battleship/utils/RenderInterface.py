@@ -1,5 +1,6 @@
 import PygameRenderer as pr
 import time
+time.sleep(3)
 
 """
 for board matrix use the following convention:
@@ -40,7 +41,7 @@ board1[8][6] = 1
 board1[8][7] = 1
 board1[8][8] = 1
 
-board2[4][4] = 1
+board2[4][4] = 1   
 board2[4][5] = 1
 board2[4][6] = 1
 
@@ -56,7 +57,7 @@ def initialize():
     # Make sure ship lists are legal.
     pr.board1 = board1
     pr.board2 = board2
-    pr.ships1 = [[3, 2, 0, 3, 1],
+    pr.ships1 = [[3, 2, 0, 3, 1], # x, y, orientation, length
                  [2, 5, 0, 3, 1],
                  [6, 8, 0, 3, 1]]
     pr.ships2 = [[4, 4, 0, 3, 1],

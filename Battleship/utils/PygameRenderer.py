@@ -5,17 +5,21 @@ import time
 import positionCalculators
 from animator import AnimatedValue, AnimationStateMachine
 import pygame
+from pygame import mixer
 import os
+##from ..BattleGround import main
 
-
+x = 20
+y = 45
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x,y)
 pygame.init()
 pygame.display.init()
 
 #Loading Resources
 
-tilepath1 = "../Assets/1/"
-tilepath2 = "../Assets/2/"
-OnBoardPath = "../Assets/OnBoard/"
+tilepath1 = "Battleship/Assets/1/"
+tilepath2 = "Battleship/Assets/2/"
+OnBoardPath = "Battleship/Assets/OnBoard/"
 
 tiles = {}
 
@@ -44,6 +48,8 @@ bullets = []  # same format as gun turrent [[position], rotation]
 bullet2 = []
 bullet_image = None
 bullet2_image = None
+explosions = []
+shipwrecks = []
 
 # Control Variables
 team1_info = None
@@ -225,9 +231,16 @@ def render():
 
     render_board([window_size[0]-(side_column_width+(side_column_margin*2)+board_margin+max_board_dim[0]),
                   board_margin], board2, shi2)
+    
+    for shipwreck in shipwrecks:
+        screen.blit(tiles['0010B'], [shipwreck[0](), shipwreck[1]()])
+    for explosion in explosions:
+        screen.blit(tiles['Explosion'], [explosion[0](), explosion[1]()])
+        pass
 
     screen.blit(bullet_image, [bullets[0](), bullets[1]()])
     screen.blit(bullet2_image, [bullet2[0](), bullet2[1]()])
+
 
     font = pygame.font.SysFont("Segoe UI", 80)
     img = font.render('Team-I', True, BackgroundColorRGB)
@@ -262,13 +275,14 @@ def initialize():
     cell_size_index = index
 
     # RecalculateWindowSizeHere
+    global width
     width = int((side_column_margin*4) + (board_margin*4) + divider_line_thickness + (side_column_width*2) + (max_board_dim[0]*2))
 
     if side_column_margin > board_margin:
         gmargin = side_column_margin
     else:
         gmargin = board_margin
-
+    global height
     height = int((leaderboard_margin*2) + leaderboard_height + (len(board1)*cell_size[index]) + gmargin)
 
     window_size = [width, height]
@@ -289,7 +303,7 @@ def initialize():
     # Loading tiles
     load_tiles(tilepath1)
     load_tiles(tilepath2)
-    load_tiles("../Assets/Backgrounds/")
+    load_tiles("Battleship/Assets/Backgrounds/")
 
     # Resize imported tiles
     for key in tiles.keys():
@@ -414,12 +428,99 @@ def animation_handler(anim_instruction):
         pygame.display.update()
         dT = clock.tick(FPS)/1000
 
+### sound fx loading
+pygame.mixer.init()
+hit_sound = pygame.mixer.Sound('Battleship\Assets\sounds\cannon.mp3')
+hit_sound.set_volume(1.4)
+cannonball = pygame.mixer.Sound("Battleship\Assets\sounds\moving.mp3")
+
+fire_sound = pygame.mixer.Sound("Battleship\Assets\sounds\shoot.mp3")
+fire_sound.set_volume(0.67)
+miss_hit = pygame.mixer.Sound("Battleship\Assets\sounds\misshit.mp3")
+miss_hit.set_volume(0.8)
+
 frames = 0
 shoot = True
 setzero = False
+fire_ready = True
+
+def hit(pos, isfromleft):
+    print(f"shipwrecks: {shipwrecks}")
+    print(f"explosions: {explosions}")
+    if isfromleft:
+        ships = ships2
+    else:
+        ships = ships1
+    print(pos, ships)
+    for ship in ships:
+        if ship[2] == 0:
+            if pos[1] == ship[1]:
+                if pos[0] <= ship[0] + ship[3] and pos[0] >= ship[0]:
+                    return True
+        else:
+            if pos[0] == ship[0]:
+                if pos[1] <= ship[1] + ship[3] and pos[1] >= ship[1]:
+                    return True
+    return False
+
+            
+def explosion_handler(pos,isfromleft):
+    global bullets, fire_ready, bullet_image
+    if not bullets[0].animated and not bullets[1].animated:
+        print(f"{pos}-----left: {isfromleft}-----hit:{hit(pos, isfromleft)}")
+        #print(f"{pos}-----left: {isfromleft}-----{hit(pos, isfromleft)}")
+        if hit(pos, isfromleft):
+            hit_sound.play()
+            bullet_image = tiles['0010B']
+            shipwrecks.append([bullets[0], bullets[1]])
+        else:
+            miss_hit.play()
+        bullet_image = tiles['Explosion']
+        explosions.append([bullets[0], bullets[1]])
+        #pygame.time.wait(1000)
+        fire_ready = True
+        return
+        #pygame.time.wait(1000)
+        #bullet_image = tiles['trans']
+    
+        #pygame.time.wait(1000)
+        
+    #pygame.time.wait(1000)
+    #fire_ready = True
+    #hit.play()
+    #del bullets[0], bullets[1]
+    return
+
+def fire(pos, board1_pos, board2_pos, isfromleft):
+    global bullet_image, fire_ready, bullets, bullet_velocity, cell_size, cell_size_index, bullet2
+    
+    if fire_ready:
+        #print(hit(pos,isfromleft))
+        fire_ready = False
+        #screen.blit(bullet_image, [bullets[0](), bullets[1]()])
+        #pygame.display.update()
+        fire_ready = False
+        fire_sound.play()
+        cannonball.play()
+        if isfromleft:
+            bullets = [AnimatedValue(-turrent_cell_size/2, FPS), AnimatedValue((height/2)-(turrent_cell_size/2), FPS)]
+            bullet_image = tiles['bulletN']
+            bullets[0].animate(board2_pos[0]+cell_size[cell_size_index]*pos[0], bullet_velocity)
+            bullets[1].animate(board2_pos[1]+cell_size[cell_size_index]*pos[1], bullet_velocity)
+        else:
+            bullets = [AnimatedValue(width+turrent_cell_size/2, FPS), AnimatedValue((height/2)-(turrent_cell_size/2), FPS)]
+            bullet_image = tiles['BulletN2']
+            bullets[0].animate(board1_pos[0]+cell_size[cell_size_index]*pos[0], bullet_velocity)
+            bullets[1].animate(board1_pos[1]+cell_size[cell_size_index]*pos[1], bullet_velocity)
+    
+    explosion_handler(pos,isfromleft)
+    return
+        #bullet1over = True
+
+
 
 def draw_call(animation_instruction):
-    global screen, running, clock, count, in_animation, bullet_image, frames, board2, bullet1over, shoot, setzero, bullet2_image
+    global screen, running, clock, count, in_animation, bullet_image, frames, board2, bullet1over, shoot, setzero, bullet2_image, fire_ready
     #animation_instruction is of the following format: [animation_id, animation_info]
     #if animation_instruction[0] != None:
     #    in_animation = True
@@ -431,39 +532,59 @@ def draw_call(animation_instruction):
     board2_pos = [window_size[0] - (side_column_width + (side_column_margin * 2) + board_margin + max_board_dim[0]),
                   board_margin]
 
-    bullets[0].animate(board2_pos[0]+cell_size[cell_size_index]*3, bullet_velocity)
-    bullets[1].animate(board2_pos[1]+cell_size[cell_size_index]*1, bullet_velocity)
 
+    #bullets[0].animate(board2_pos[0]+cell_size[cell_size_index]*3, bullet_velocity)
+    #bullets[1].animate(board2_pos[1]+cell_size[cell_size_index]*1, bullet_velocity)
 
+    
     while True:
+        #print(ships1)
         render()
+        ### This function runs in every iteration. So, the explosion_handler function is taking in these position values.
+        fire((3,1), board1_pos, board2_pos, isfromleft=True) 
+        fire((1,1), board1_pos, board2_pos, isfromleft=False)
+        #explosion_handler()
+        #fire((9,9), board1_pos, board2_pos)
+            
+
+        """
         if not bullet1over:
             if not bullets[0].animated and not bullets[1].animated:
+                
+                hit.play()
                 bullet_image = tiles['Explosion']
                 bullet1over = True
-                """
+                
                 if frames > 0 and frames < FPS*0.5*dT:
                     bullet_image = tiles['Explosion']
                 elif frames > FPS*0.5*dT and frames < FPS*0.525*dT:
                     bullet_image = tiles['ExplosionLarge']
                 else:
                     bullet_image = tiles['0010B']
-                    bullet1over = True
-                    #board2[1][3] = 0"""
-
-
+                    bullet1over = True"""
+                    #board2[1][3] = 0
+        """
         if bullet1over:
+            #pygame.time.wait(300)
             if shoot:
+                #fire_sound.play()
+                cannonball.play()
                 bullet2[0].animate(board1_pos[0]+cell_size[cell_size_index]*6, bullet_velocity)
                 bullet2[1].animate(board1_pos[1]+cell_size[cell_size_index]*8, bullet_velocity)
+                
                 shoot = False
+                
             else:
                 if not bullet2[0].animated and not bullet2[1].animated and not setzero:
+                    miss_hit.play()
                     frames = 0
                     setzero = True
                 if setzero:
+                    
+                    #miss_hit.fadeout(100)
                     bullet2_image = tiles['Explosion']
-                    """
+                    
+                    
                     if frames > 0 and frames < FPS * 0.5 * dT:
                         bullet2_image = tiles['Explosion']
                     elif frames > FPS * 0.5 * dT and frames < FPS * 0.525 * dT:

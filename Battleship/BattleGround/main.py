@@ -82,9 +82,6 @@ team1_hawkeye_activated = False
 team2_hawkeye_activated = False
 ## index 0 is for skipping opponent's chance and index 1 is for Missile Hawkeye!
 
-
-
-
 # Player1 driver function
 def player1():
     global team2_board, team2_special_spot, team1_hawkeye_activated
