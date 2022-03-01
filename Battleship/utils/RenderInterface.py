@@ -29,6 +29,7 @@ initial_skirting = 0.5
 board1 = [ [ 0 for i in range(10) ] for j in range(10) ]
 board2 = [ [ 0 for i in range(10) ] for j in range(10) ]
 
+"""
 board1[2][3] = 1
 board1[2][4] = 1
 board1[2][5] = 1
@@ -52,17 +53,30 @@ board2[7][8] = 1
 board2[1][3] = 1
 board2[1][4] = 1
 board2[1][5] = 1
+"""
+
+def placeShips(board, ships):
+    for ship in ships:
+        for x in range(ship[3]):
+            for y in range(ship[4]):
+                #Assertions/If statements must be made here to avoid out-of-index errors.
+                #Erroneous ship placement is the participants fault.
+                board[ship[1]+y][ship[0]+x] = 1
+    
+    return board
 
 def initialize():
     # Make sure ship lists are legal.
     pr.board1 = board1
     pr.board2 = board2
-    pr.ships1 = [[3, 2, 0, 3, 1], # x, y, orientation, length
+    pr.ships1 = [[0, 0, 0, 3, 1], # x, y, orientation, length
                  [2, 5, 0, 3, 1],
                  [6, 8, 0, 3, 1]]
     pr.ships2 = [[4, 4, 0, 3, 1],
                  [6, 7, 0, 3, 1],
                  [3, 1, 0, 3, 1]]
+    pr.board1 = placeShips(pr.board1, pr.ships1)
+    pr.board2 = placeShips(pr.board2, pr.ships2)
     pr.initialize()
 
 
