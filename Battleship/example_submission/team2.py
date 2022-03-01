@@ -3,12 +3,12 @@ import random
 class BattleShip:
     def __init__(self):
         self.team_name = "Team 2"
-        self.board = board
+        self.ships = ships
         self.opponent_board = opponent_board
         self.info = -1
 
-    def set_board(self):
-        return self.board
+    def set_ships(self):
+        return self.ships
 
     def attack(self):
         x = random.randint(0,10)
@@ -22,19 +22,9 @@ class BattleShip:
             self.opponent_board[x][y] = info
 
 
-
-board = [
-        [1, 0, 0, 0, 0, 1, 1, 1, 1, 1], 
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0], 
-        [0, 0, 1, 0, 0, 0, 0, 0, 0, 0], 
-        [0, 0, 1, 0, 0, 1, 0, 0, 0, 0], 
-        [0, 0, 1, 0, 0, 1, 0, 0, 0, 0], 
-        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0], 
-        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0], 
-        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0], 
-        [0, 0, 1, 1, 1, 1, 0, 0, 0, 0]
-    ]
+ships = [[4, 6, 0, 3, 0],
+         [3, 2, 0, 4, 1],
+         [9, 8, 0, 5, 0]]
 
 
 

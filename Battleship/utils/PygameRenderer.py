@@ -9,6 +9,10 @@ from pygame import mixer
 import os
 ##from ..BattleGround import main
 
+#################################IMPORTANT#################################
+# use "python3 Battleship/utils/RenderInterface.py" to avoid path issues  #
+#################################IMPORTANT#################################
+
 x = 20
 y = 45
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x,y)
@@ -232,8 +236,8 @@ def render():
     render_board([window_size[0]-(side_column_width+(side_column_margin*2)+board_margin+max_board_dim[0]),
                   board_margin], board2, shi2)
     
-    for shipwreck in shipwrecks:
-        screen.blit(tiles['0010B'], [shipwreck[0](), shipwreck[1]()])
+    #for shipwreck in shipwrecks:
+        #screen.blit(tiles['0010B'], [shipwreck[0](), shipwreck[1]()])
     for explosion in explosions:
         screen.blit(tiles['Explosion'], [explosion[0](), explosion[1]()])
         pass
@@ -303,7 +307,7 @@ def initialize():
     # Loading tiles
     load_tiles(tilepath1)
     load_tiles(tilepath2)
-    load_tiles("Battleship/Assets/Backgrounds/")
+    load_tiles("/Users/siddarthreddy/workspace/aarch64/BattleShip-BattleGround/Battleship/Assets/Backgrounds/")
 
     # Resize imported tiles
     for key in tiles.keys():
@@ -324,6 +328,9 @@ def initialize():
 
     # Calculating Turrent Positions
     # center of turrents will be at the center of ships.
+
+
+    
     shipos1 = positionCalculators.calculateShipPositions(ships1, cell_size[index], [side_column_width+(side_column_margin*2)+board_margin, board_margin], turrent_cell_size)
     shipos2 = positionCalculators.calculateShipPositions(ships2, cell_size[index], [window_size[0]-(side_column_width+(side_column_margin*2)+board_margin+max_board_dim[0]), board_margin], turrent_cell_size)
 
@@ -341,7 +348,7 @@ def initialize():
     bullet2_image = tiles['BulletN2']
 
 
-    #temporary animation blit
+   #temporary animation blit
 
 
 # Everything below is cheap AF (probably have to rewrite all the animation shit)
@@ -430,13 +437,13 @@ def animation_handler(anim_instruction):
 
 ### sound fx loading
 pygame.mixer.init()
-hit_sound = pygame.mixer.Sound('Battleship\Assets\sounds\cannon.mp3')
+hit_sound = pygame.mixer.Sound("./Battleship/Assets/sounds/cannon.mp3")
 hit_sound.set_volume(1.4)
-cannonball = pygame.mixer.Sound("Battleship\Assets\sounds\moving.mp3")
+cannonball = pygame.mixer.Sound("./Battleship/Assets/sounds/moving.mp3")
 
-fire_sound = pygame.mixer.Sound("Battleship\Assets\sounds\shoot.mp3")
+fire_sound = pygame.mixer.Sound("./Battleship/Assets/sounds/shoot.mp3")
 fire_sound.set_volume(0.67)
-miss_hit = pygame.mixer.Sound("Battleship\Assets\sounds\misshit.mp3")
+miss_hit = pygame.mixer.Sound("./Battleship/Assets/sounds/misshit.mp3")
 miss_hit.set_volume(0.8)
 
 frames = 0

@@ -51,9 +51,63 @@ team2_module = team2.BattleShip()
 
 
 ## Setting both BattleFields !!
-team1_board = team1_module.set_board()
-team2_board = team2_module.set_board()
+team1_ships = team1_module.set_ships()
+team2_ships = team2_module.set_ships()
 
+# Orientation of the ships
+for ship in team1_ships:
+    if ship[4] == 0:
+        ship[4] = ship[3]
+        ship[4] = 1
+for ship in team2_ships:
+    if ship[4] == 0:
+        ship[4] = ship[3]
+        ship[4] = 1
+
+
+empty_board = [
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+    ]
+
+# converting to the board to matrix format
+team1_board = [[]]
+team2_board = [[]]
+
+for ship in team1_ships:
+    row = ship[0]
+    col = ship[1]
+    length = ship[3]
+    orientation = ship[4]
+    
+    if orientation == 0:
+        for i in range(length):
+            team1_board[row+i][col] = 1
+    elif orientation == 1:
+        for i in range(length):
+            team1_board[row][col+i] = 1
+
+for ship in team2_ships:
+    row = ship[0]
+    col = ship[1]
+    length = ship[3]
+    orientation = ship[4]
+    team2_board = empty_board
+
+    if orientation == 0:
+        for i in range(length):
+            team2_board[row+i][col] = 1
+    elif orientation == 1:
+        for i in range(length):
+            team2_board[row][col+i] = 1
 
 ## For Pygame initialisation
 animation.board1 = team1_board
