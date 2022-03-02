@@ -2,8 +2,8 @@ import math
 import random
 import time
 
-import positionCalculators
-from animator import AnimatedValue, AnimationStateMachine
+import Battleship.utils.positionCalculators as positionCalculators
+from Battleship.utils.animator import AnimatedValue, AnimationStateMachine
 import pygame
 from pygame import mixer
 import os
@@ -307,7 +307,7 @@ def initialize():
     # Loading tiles
     load_tiles(tilepath1)
     load_tiles(tilepath2)
-    load_tiles("/Users/siddarthreddy/workspace/aarch64/BattleShip-BattleGround/Battleship/Assets/Backgrounds/")
+    load_tiles("Battleship/Assets/Backgrounds/")
 
     # Resize imported tiles
     for key in tiles.keys():
@@ -328,18 +328,19 @@ def initialize():
 
     # Calculating Turrent Positions
     # center of turrents will be at the center of ships.
+    global shi1,shi2, shipos1, shipos2
 
-
-    
     shipos1 = positionCalculators.calculateShipPositions(ships1, cell_size[index], [side_column_width+(side_column_margin*2)+board_margin, board_margin], turrent_cell_size)
     shipos2 = positionCalculators.calculateShipPositions(ships2, cell_size[index], [window_size[0]-(side_column_width+(side_column_margin*2)+board_margin+max_board_dim[0]), board_margin], turrent_cell_size)
+
 
     for shipos in shipos1:
         shi1.append([shipos, AnimatedValue(0, FPS)])
 
     for shipos in shipos2:
         shi2.append([shipos, AnimatedValue(180, FPS)])
-
+    #print(shipos1)
+    #print(shipos2)
     board1_pos = [side_column_width + (side_column_margin * 2) + board_margin, board_margin]
 
     bullets = [AnimatedValue(-turrent_cell_size/2, FPS), AnimatedValue((height/2)-(turrent_cell_size/2), FPS)]
@@ -452,13 +453,13 @@ setzero = False
 fire_ready = True
 
 def hit(pos, isfromleft):
-    print(f"shipwrecks: {shipwrecks}")
-    print(f"explosions: {explosions}")
+    #print(f"shipwrecks: {shipwrecks}")
+    #print(f"explosions: {explosions}")
     if isfromleft:
         ships = ships2
     else:
         ships = ships1
-    print(pos, ships)
+    #print(pos, ships)
     for ship in ships:
         if ship[2] == 0:
             if pos[1] == ship[1]:
@@ -470,12 +471,14 @@ def hit(pos, isfromleft):
                     return True
     return False
 
-            
+stop = False
+    
 def explosion_handler(pos,isfromleft):
-    global bullets, fire_ready, bullet_image
+    global bullets, fire_ready, bullet_image, stop
+    stop = False
     if not bullets[0].animated and not bullets[1].animated:
-        print(f"{pos}-----left: {isfromleft}-----hit:{hit(pos, isfromleft)}")
-        #print(f"{pos}-----left: {isfromleft}-----{hit(pos, isfromleft)}")
+        #print(f"{pos}-----left: {isfromleft}-----hit:{hit(pos, isfromleft)}")
+        ##print(f"{pos}-----left: {isfromleft}-----{hit(pos, isfromleft)}")
         if hit(pos, isfromleft):
             hit_sound.play()
             bullet_image = tiles['0010B']
@@ -486,10 +489,12 @@ def explosion_handler(pos,isfromleft):
         explosions.append([bullets[0], bullets[1]])
         #pygame.time.wait(1000)
         fire_ready = True
-        return
+        stop = True
+        return False
         #pygame.time.wait(1000)
         #bullet_image = tiles['trans']
     
+    return True
         #pygame.time.wait(1000)
         
     #pygame.time.wait(1000)
@@ -502,7 +507,7 @@ def fire(pos, board1_pos, board2_pos, isfromleft):
     global bullet_image, fire_ready, bullets, bullet_velocity, cell_size, cell_size_index, bullet2
     
     if fire_ready:
-        #print(hit(pos,isfromleft))
+        ##print(hit(pos,isfromleft))
         fire_ready = False
         #screen.blit(bullet_image, [bullets[0](), bullets[1]()])
         #pygame.display.update()
@@ -526,26 +531,38 @@ def fire(pos, board1_pos, board2_pos, isfromleft):
 
 
 
-def draw_call(animation_instruction):
-    global screen, running, clock, count, in_animation, bullet_image, frames, board2, bullet1over, shoot, setzero, bullet2_image, fire_ready
+def draw_call(fire_coordinates, isfromleft):
+    global screen, running, clock, count, in_animation, bullet_image, frames, board2, bullet1over, shoot, setzero, bullet2_image, fire_ready, stop
     #animation_instruction is of the following format: [animation_id, animation_info]
     #if animation_instruction[0] != None:
     #    in_animation = True
     #    animation_handler(animation_instruction)
 
+    # while True:
     bullet1over = False
 
     board1_pos = [side_column_width + (side_column_margin * 2) + board_margin, board_margin]
     board2_pos = [window_size[0] - (side_column_width + (side_column_margin * 2) + board_margin + max_board_dim[0]),
-                  board_margin]
+                board_margin]
 
 
     #bullets[0].animate(board2_pos[0]+cell_size[cell_size_index]*3, bullet_velocity)
     #bullets[1].animate(board2_pos[1]+cell_size[cell_size_index]*1, bullet_velocity)
+    render()
+    fire(fire_coordinates, board1_pos, board2_pos, isfromleft=isfromleft) 
+    # fire((1,1), board1_pos, board2_pos, isfromleft=False)
+    # if stop:
+    #     break
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    pygame.display.update()
+    clock.tick(FPS)
 
+    return
     
     while True:
-        #print(ships1)
+        ##print(ships1)
         render()
         ### This function runs in every iteration. So, the explosion_handler function is taking in these position values.
         fire((3,1), board1_pos, board2_pos, isfromleft=True) 

@@ -2,7 +2,7 @@ from itertools import chain
 import time
 from ..utils import RenderInterface as animation
 import random
-from ..utils import RenderTest as animation
+# from ..utils import RenderTest as animation
 
 from ..example_submission import team1
 from ..example_submission import team2
@@ -58,11 +58,11 @@ team2_ships = team2_module.set_ships()
 for ship in team1_ships:
     if ship[4] == 0:
         ship[4] = ship[3]
-        ship[4] = 1
+        ship[3] = 1
 for ship in team2_ships:
     if ship[4] == 0:
         ship[4] = ship[3]
-        ship[4] = 1
+        ship[3] = 1
 
 
 empty_board = [
@@ -87,6 +87,7 @@ for ship in team1_ships:
     col = ship[1]
     length = ship[3]
     orientation = ship[4]
+    team1_board = empty_board
     
     if orientation == 0:
         for i in range(length):
@@ -110,8 +111,8 @@ for ship in team2_ships:
             team2_board[row][col+i] = 1
 
 ## For Pygame initialisation
-animation.board1 = team1_board
-animation.board2 = team2_board
+animation.ships1 = team1_ships
+animation.ships2 = team2_ships
 animation.initialize()
 
 
@@ -159,9 +160,9 @@ def player1():
 
     team1_module.hit_or_miss(x, y, info)  ## info = 0 for only hit , 1 for miss, and -1 for out of range shooting, info = 2 for skipping opponent's chance, and info = 3 for Hawkeye Missile Activation
 
-    animation.update(team1_board, team2_board)     ## Update Animation board
+    animation.update((x,y), isfromleft=True)     ## Update Animation board
 
-    time.sleep(1)
+    # time.sleep(1)
     if game_over(team2_board):
         print("Team 1 has won !!!")
         exit()
@@ -196,9 +197,9 @@ def player2():
 
     team2_module.hit_or_miss(x, y, info)
 
-    animation.update(team1_board, team2_board)     ## Update Animation board
+    animation.update((x,y), isfromleft=False)     ## Update Animation board
     
-    time.sleep(1)
+    # time.sleep(1)
     if game_over(team1_board):
         print("Team 2 has won !!!")
         exit()

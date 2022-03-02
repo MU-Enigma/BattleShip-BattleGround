@@ -11,8 +11,8 @@ class BattleShip:
         return self.ships
 
     def attack(self):
-        x = random.randint(0,10)
-        y = random.randint(0,10)
+        x = random.randint(0,9)
+        y = random.randint(0,9)
         return (x,y)
 
     def hit_or_miss(self, x, y , info):
@@ -22,9 +22,9 @@ class BattleShip:
             self.opponent_board[x][y] = info
 
 
-ships = [[4, 6, 0, 3, 0],
-         [3, 2, 0, 4, 1],
-         [9, 8, 0, 5, 0]]
+ships = [[7, 4, 0, 3, 0],
+                [3, 6, 0, 3, 1],
+                [3, 1, 0, 3, 1]]
 
 
 
