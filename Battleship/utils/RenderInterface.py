@@ -12,7 +12,7 @@ for board matrix use the following convention:
 
 pr.max_board_dim = [800, 800]
 pr.side_column_width = 100
-pr.leaderboard_height = 0
+pr.leaderboard_height = 100
 
 ships1 = []
 ships2 = []
@@ -59,12 +59,14 @@ board2[1][5] = 1
 """
 
 def placeShips(board, ships):
+    n = 0
     for ship in ships:
+        n += 1
         for x in range(ship[3]):
             for y in range(ship[4]):
                 #Assertions/If statements must be made here to avoid out-of-index errors.
                 #Erroneous ship placement is the participants fault.
-                board[ship[1]+y][ship[0]+x] = 1
+                board[ship[1]+y][ship[0]+x] = n
     
     return board
 
