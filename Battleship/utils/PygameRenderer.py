@@ -472,7 +472,7 @@ def hit(pos, isfromleft):
     return False
 
 stop = False
-    
+hit_or_miss_font = pygame.font.Font('freesansbold.ttf', 64)
 def explosion_handler(pos,isfromleft):
     global bullets, fire_ready, bullet_image, stop
     stop = False
@@ -482,9 +482,12 @@ def explosion_handler(pos,isfromleft):
         if hit(pos, isfromleft):
             hit_sound.play()
             bullet_image = tiles['0010B']
+            hit_or_miss_text = hit_or_miss_font.render("Hit", True, (0,0,0))
+            screen.blit(hit_or_miss_text, (random.randrange(100, 1500), (100, 700)))
             shipwrecks.append([bullets[0], bullets[1]])
         else:
             miss_hit.play()
+            hit_or_miss_text = hit_or_miss_font.render("Miss", True, (0,0,0))
         bullet_image = tiles['Explosion']
         explosions.append([bullets[0], bullets[1]])
         #pygame.time.wait(1000)
@@ -529,7 +532,13 @@ def fire(pos, board1_pos, board2_pos, isfromleft):
     return
         #bullet1over = True
 
+font = pygame.font.Font('freesansbold.ttf', 170)
+winner_font = pygame.font.Font('freesansbold.ttf', 64)
 
+def winner_text(text):
+    global screen
+    winner_text = font.render(text, True, (0,0,0))
+    screen.blit(winner_text, (200, 250))
 
 def draw_call(fire_coordinates, isfromleft):
     global screen, running, clock, count, in_animation, bullet_image, frames, board2, bullet1over, shoot, setzero, bullet2_image, fire_ready, stop
@@ -549,7 +558,8 @@ def draw_call(fire_coordinates, isfromleft):
     #bullets[0].animate(board2_pos[0]+cell_size[cell_size_index]*3, bullet_velocity)
     #bullets[1].animate(board2_pos[1]+cell_size[cell_size_index]*1, bullet_velocity)
     render()
-    fire(fire_coordinates, board1_pos, board2_pos, isfromleft=isfromleft) 
+    fire(fire_coordinates, board1_pos, board2_pos, isfromleft=isfromleft)
+    winner_text("TEAM1 has won!")
     # fire((1,1), board1_pos, board2_pos, isfromleft=False)
     # if stop:
     #     break

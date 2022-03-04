@@ -8,18 +8,22 @@ from ..example_submission import team1
 from ..example_submission import team2
 
 dim = 10 ## dimension of board
-
+response = ""
 def update_hit(board, x, y):
+    global response
     info = -1
     if x > len(board) or y > len(board[0]) or x < -(len(board)) or y < -(len(board[0])):
-            print("FIRED OUT OF BATTLEZONE")
+            response = "FIRED OUT OF BATTLEZONE"
+            print(response)
 
     elif board[x][y] == 1:
             info = 0
             board[x][y] = info
-            print("HIT !!") 
+            response = "HIT !!"
+            print(response) 
     else:
-        print("MISS !!")
+        response = "MISS !!"
+        print(response)
         info = 1 ## MISS
 
     return (board, info)
@@ -49,6 +53,9 @@ def hawkeye_attack(board, x, y):
 team1_module = team1.BattleShip()
 team2_module = team2.BattleShip()
 
+## Loading team names
+team1_name = team1_module.team_name
+team2_name = team2_module.team_name
 
 ## Setting both BattleFields !!
 team1_ships = team1_module.set_ships()
@@ -139,9 +146,9 @@ team2_hawkeye_activated = False
 
 # Player1 driver function
 def player1():
-    global team2_board, team2_special_spot, team1_hawkeye_activated
+    global team2_board, team2_special_spot, team1_hawkeye_activated, response
     x, y = team1_module.attack()
-    print("Team 1 attacked at  : " + str((x,y)))
+    print(f"{team1_name} attacked at  : " + str((x,y)))
     team2_board, info = update_hit(team2_board, x, y) ## Updates the board as well as returns hit/miss
     if team1_hawkeye_activated:
         team1_hawkeye_activated = False
@@ -149,12 +156,14 @@ def player1():
     if (x,y) in team2_special_spot:
         if team2_special_spot.index((x,y)) == 0:
             info = 2
-            print("NULLIFY")
+            response = f"{team1_name} NULLIFIED {team2_name}"
+            print(response)
 
         elif team2_special_spot.index((x,y)) == 1:
             info = 3
             team1_hawkeye_activated = True
-            print("HAWKEYE ACTIVATED !! ")
+            response = "HAWKEYE ACTIVATED !! "
+            print(response)
 
         team2_special_spot[team2_special_spot.index((x,y))] = None
 
@@ -164,7 +173,9 @@ def player1():
 
     # time.sleep(1)
     if game_over(team2_board):
-        print("Team 1 has won !!!")
+        winner_text = f"{team1_name} has won !!!"
+        animation.winner_text(winner_text)
+        print(winner_text)
         exit()
 
     if info == 2:
@@ -175,7 +186,8 @@ def player1():
 def player2():
     global team1_board, team2_board, team1_special_spot, team2_hawkeye_activated
     x, y = team2_module.attack()
-    print("Team 2 attacked at  : " + str((x,y)))
+    print("{team2_name} attacked at  : " + str((x,y)))
+    
     team1_board, info = update_hit(team1_board, x, y)
     if team2_hawkeye_activated:
         team2_hawkeye_activated = False
@@ -184,13 +196,15 @@ def player2():
     if (x,y) in team1_special_spot:
         if team1_special_spot.index((x,y)) == 0:
             info = 2
-            print("NULLIFY")
+            response = f"{team2_name} NULLIFIED {team1_name}"
+            print(response)
             time.sleep(5)
 
         elif team1_special_spot.index((x,y)) == 1:
             info = 3
             team2_hawkeye_activated = True
-            print("HAWKEYE ACTIVATED !! ")
+            response = "HAWKEYE ACTIVATED !! "
+            print(response)
             time.sleep(5)
 
         team1_special_spot[team1_special_spot.index((x,y))] = None
@@ -201,7 +215,9 @@ def player2():
     
     # time.sleep(1)
     if game_over(team1_board):
-        print("Team 2 has won !!!")
+        winner_text = f"{team1_name} has won !!!"
+        animation.winner_text(winner_text)
+        print(winner_text)
         exit()
     if info == 2:
         player2()

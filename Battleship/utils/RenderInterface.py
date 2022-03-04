@@ -102,9 +102,14 @@ def initialize():
 
 # while pr.running:
 #     pr.draw_call([None, None])
+def winner_text(text):
+    global exit_window
+    pr.winner_text(text)
+exit_window = False
 
 def update(fire, isfromleft):
-    while True:
+    while not exit_window:
+        winner_text("TEAM 2 HAS won!")
         pr.draw_call(fire, isfromleft)
         # print(pr.stop)
         if pr.stop:
