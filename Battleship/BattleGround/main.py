@@ -186,7 +186,7 @@ def player1():
 def player2():
     global team1_board, team2_board, team1_special_spot, team2_hawkeye_activated
     x, y = team2_module.attack()
-    print("{team2_name} attacked at  : " + str((x,y)))
+    print(f"{team2_name} attacked at  : " + str((x,y)))
     
     team1_board, info = update_hit(team1_board, x, y)
     if team2_hawkeye_activated:
@@ -215,7 +215,7 @@ def player2():
     
     # time.sleep(1)
     if game_over(team1_board):
-        winner_text = f"{team1_name} has won !!!"
+        winner_text = f"{team2_name} has won !!!"
         animation.winner_text(winner_text)
         print(winner_text)
         exit()

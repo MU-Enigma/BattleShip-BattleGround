@@ -1,6 +1,7 @@
 import math
 import random
 import time
+from turtle import window_width
 
 import Battleship.utils.positionCalculators as positionCalculators
 from Battleship.utils.animator import AnimatedValue, AnimationStateMachine
@@ -105,7 +106,7 @@ cell_colors = [ #Temporarily representing ships as flat colors
 bullet_velocity = 0.5
 bullet1over = False
 
-
+hit_or_miss_bool = ""
 def min(l):
     v = l[0]
     index = 0
@@ -134,7 +135,13 @@ def render_side_column(pos, team_info):
 
     #TODO: Write stuff to render/visualize data related to each team (team_info)
 
-
+def render_bottom_row(pos):
+    # pygame.draw.rect(screen, side_column_background_color, pygame.Rect(30, 30, 60, 60))
+    #pygame.draw.rect(screen, side_column_background_color, pygame.Rect([pos[0], pos[1]], side_column_dimensions[0], side_column_dimensions[1]))
+    pygame.draw.rect(screen, side_column_background_color, pygame.Rect(pos[0],
+                                                                       pos[1],
+                                                                       side_column_dimensions[0],
+                                                                       side_column_dimensions[1]))
 def render_leaderboard(pos):
     pygame.draw.rect(screen, leaderboard_background_color, pygame.Rect(pos[0],
                                                                        pos[1],
@@ -144,7 +151,7 @@ def render_leaderboard(pos):
     #TODO: Write stuff to render/visualize data related to the leaderboard/scoresheet
 
 
-def nomenclature(board, pos):
+def nomenclature(n, board, pos):
     s_tiles = []
 
     for y in range(3):
@@ -157,6 +164,11 @@ def nomenclature(board, pos):
                 s_tiles.append(board[index_y][index_x])
 
     # top, left, right, bottom
+    for i, tile in enumerate(s_tiles):
+        if tile != n:
+            s_tiles[i] = 0
+        else:
+            s_tiles[i] = 1
     return str(s_tiles[1]) + str(s_tiles[3]) + str(s_tiles[5]) + str(s_tiles[7])
 
 
@@ -176,8 +188,8 @@ def render_board(pos, board, shi):
 
             cell_pos = [pos[0]+(x * cell_size[index]), pos[1]+(y * cell_size[index])]
             if x != board_elem_dim[0] and y != board_elem_dim[1]:
-                if board[y][x] == 1:
-                    screen.blit(tiles[nomenclature(board, (x, y))], cell_pos)
+                if board[y][x] != 0:
+                    screen.blit(tiles[nomenclature(board[y][x], board, (x, y))], cell_pos)
 
             #TODO: draw turrents here.
 
@@ -228,6 +240,7 @@ def render():
     render_side_column([side_column_margin, side_column_margin], "team-info")
     render_side_column([window_size[0]-(side_column_margin+side_column_width),
                         side_column_margin], "team-info")
+    render_bottom_row([1500, 1500])
     render_leaderboard([leaderboard_margin, window_size[1]-(leaderboard_height+leaderboard_margin)])
 
     render_board([side_column_width+(side_column_margin*2)+board_margin,
@@ -254,6 +267,8 @@ def render():
     font = pygame.font.SysFont("Segoe UI", 80)
     img = font.render('Team-II', True, BackgroundColorRGB)
     img = pygame.transform.rotate(img, 270)
+    # hit_or_miss = font.render(hit_or_miss_bool, True, BackgroundColorRGB)
+    # screen.blit(hit_or_miss, (200, 250))
     screen.blit(img, (window_size[0]-side_column_margin-100, side_column_dimensions[1] - 500))
 
 def load_tiles(tilepath):
@@ -452,7 +467,7 @@ shoot = True
 setzero = False
 fire_ready = True
 
-def hit(pos, isfromleft):
+def hit2(pos, isfromleft):
     #print(f"shipwrecks: {shipwrecks}")
     #print(f"explosions: {explosions}")
     if isfromleft:
@@ -470,11 +485,24 @@ def hit(pos, isfromleft):
                 if pos[1] <= ship[1] + ship[3] and pos[1] >= ship[1]:
                     return True
     return False
+def hit(pos, isfromleft):
+    if isfromleft:
+        if board2[pos[1]][pos[0]] != 0:
+            return True
+        else:
+            return False
+    else:
+        if board1[pos[1]][pos[0]] != 0:
+            return True
+        else:
+            return False
 
 stop = False
 hit_or_miss_font = pygame.font.Font('freesansbold.ttf', 64)
+hit_or_miss_text = hit_or_miss_font.render("Hit", True, (0,0,0))
+
 def explosion_handler(pos,isfromleft):
-    global bullets, fire_ready, bullet_image, stop
+    global bullets, fire_ready, bullet_image, stop, hit_or_miss_bool
     stop = False
     if not bullets[0].animated and not bullets[1].animated:
         #print(f"{pos}-----left: {isfromleft}-----hit:{hit(pos, isfromleft)}")
@@ -482,15 +510,20 @@ def explosion_handler(pos,isfromleft):
         if hit(pos, isfromleft):
             hit_sound.play()
             bullet_image = tiles['0010B']
-            hit_or_miss_text = hit_or_miss_font.render("Hit", True, (0,0,0))
-            screen.blit(hit_or_miss_text, (random.randrange(100, 1500), (100, 700)))
+            hit_or_miss_bool = "Hit"
+            # screen.blit(hit_or_miss_text, (random.randrange(100, 1500), random.randrange(100, 700)))
+            
+            # pygame.time.wait(1000)
             shipwrecks.append([bullets[0], bullets[1]])
         else:
             miss_hit.play()
-            hit_or_miss_text = hit_or_miss_font.render("Miss", True, (0,0,0))
+            hit_or_miss_bool = "Miss"
+            # screen.blit(hit_or_miss_text, (random.randrange(100, 1500), random.randrange(100, 700)))
+            # pygame.time.wait(1000)
         bullet_image = tiles['Explosion']
         explosions.append([bullets[0], bullets[1]])
-        #pygame.time.wait(1000)
+        # pygame.time.wait(1000)
+        pygame.time.set_timer(pygame.USEREVENT, 2000)
         fire_ready = True
         stop = True
         return False
@@ -558,14 +591,19 @@ def draw_call(fire_coordinates, isfromleft):
     #bullets[0].animate(board2_pos[0]+cell_size[cell_size_index]*3, bullet_velocity)
     #bullets[1].animate(board2_pos[1]+cell_size[cell_size_index]*1, bullet_velocity)
     render()
+    # winner_text("Team 1 has won!")
+    hit_or_miss_text = hit_or_miss_font.render(hit_or_miss_bool, True, (0,0,0))
+    screen.blit(hit_or_miss_text, [(window_size[0]/2)-(hit_or_miss_text.get_size()[0]/2), window_size[1]-(leaderboard_height+leaderboard_margin+10)+(hit_or_miss_text.get_size()[1]/2)])
     fire(fire_coordinates, board1_pos, board2_pos, isfromleft=isfromleft)
-    winner_text("TEAM1 has won!")
+    # winner_text("TEAM1 has won!")
     # fire((1,1), board1_pos, board2_pos, isfromleft=False)
     # if stop:
     #     break
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            pygame.quit()
+            quit()
     pygame.display.update()
     clock.tick(FPS)
 
