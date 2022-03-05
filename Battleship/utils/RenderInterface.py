@@ -22,15 +22,14 @@ ships2 = []
 # Internal Timer.
 start_time = time.time()
 
-#TimeLine
+# TimeLine
 initial_skirting = 0.5
-
 
 
 # Dummy Values for testing purposes
 
-board1 = [ [ 0 for i in range(10) ] for j in range(10) ]
-board2 = [ [ 0 for i in range(10) ] for j in range(10) ]
+board1 = [[0 for i in range(10)] for j in range(10)]
+board2 = [[0 for i in range(10)] for j in range(10)]
 
 """
 board1[2][3] = 1
@@ -58,17 +57,19 @@ board2[1][4] = 1
 board2[1][5] = 1
 """
 
+
 def placeShips(board, ships):
     n = 0
     for ship in ships:
         n += 1
         for x in range(ship[3]):
             for y in range(ship[4]):
-                #Assertions/If statements must be made here to avoid out-of-index errors.
-                #Erroneous ship placement is the participants fault.
+                # Assertions/If statements must be made here to avoid out-of-index errors.
+                # Erroneous ship placement is the participants fault.
                 board[ship[1]+y][ship[0]+x] = n
-    
+
     return board
+
 
 def initialize():
     # Make sure ship lists are legal.
@@ -87,10 +88,12 @@ def initialize():
     # print(pr.ships2)
 
     for ship in pr.ships1:
+        ship[0], ship[1] = ship[1], ship[0]
         if ship[4] == 0:
             ship[4] = ship[3]
             ship[3] = 1
     for ship in pr.ships2:
+        ship[0], ship[1] = ship[1], ship[0]
         if ship[4] == 0:
             ship[4] = ship[3]
             ship[3] = 1
@@ -107,13 +110,15 @@ def initialize():
 def winner_text(text):
     global exit_window
     pr.winner_text(text)
+
+
 exit_window = False
 
+
 def update(fire, isfromleft):
-    while not exit_window:
-        winner_text("TEAM 2 HAS won!")
+    while True:
+
         pr.draw_call(fire, isfromleft)
         # print(pr.stop)
         if pr.stop:
             break
-    print("STOPPED")
