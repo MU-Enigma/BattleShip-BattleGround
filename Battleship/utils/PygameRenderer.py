@@ -8,6 +8,9 @@ from Battleship.utils.animator import AnimatedValue, AnimationStateMachine
 import pygame
 from pygame import mixer
 import os
+from ..BattleGround import main as yo
+
+
 ##from ..BattleGround import main
 
 #################################IMPORTANT#################################
@@ -16,11 +19,11 @@ import os
 
 x = 20
 y = 45
-os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x,y)
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x, y)
 pygame.init()
 pygame.display.init()
 
-#Loading Resources
+# Loading Resources
 
 tilepath1 = "Battleship/Assets/1/"
 tilepath2 = "Battleship/Assets/2/"
@@ -28,10 +31,10 @@ OnBoardPath = "Battleship/Assets/OnBoard/"
 
 tiles = {}
 
-#Window Control variables
+# Window Control variables
 window_size = [1600, 800]
 window_caption = "Battleship-BattleGround"
-FPS=75
+FPS = 75
 BackgroundColorRGB = [15, 0, 0]  # [15, 250, 190]
 
 # Runtime Variables
@@ -92,9 +95,9 @@ leaderboard_background_color = [192, 192, 192]
 
 divider_line_thickness = 5
 
-turrent_cell_size = 45 # good ratio: 400:45 (board size to turrent_cell_size)
+turrent_cell_size = 45  # good ratio: 400:45 (board size to turrent_cell_size)
 
-cell_colors = [ #Temporarily representing ships as flat colors
+cell_colors = [  # Temporarily representing ships as flat colors
     [15, 0, 0],  # water color
     [49, 60, 62],  # Ship-body
     [255, 100, 0],  # destroyed ship
@@ -107,6 +110,8 @@ bullet_velocity = 0.5
 bullet1over = False
 
 hit_or_miss_bool = ""
+
+
 def min(l):
     v = l[0]
     index = 0
@@ -115,17 +120,20 @@ def min(l):
         if elem < v:
             v = elem
             mindex = index
-        index+=1
+        index += 1
     return mindex
+
 
 def blitRotateCenter(surf, image, topleft, angle):
 
     # Got the below code from the internet : https://stackoverflow.com/questions/4183208/how-do-i-rotate-an-image-around-its-center-using-pygame
 
     rotated_image = pygame.transform.rotate(image, angle)
-    new_rect = rotated_image.get_rect(center = image.get_rect(topleft = topleft).center)
+    new_rect = rotated_image.get_rect(
+        center=image.get_rect(topleft=topleft).center)
 
     surf.blit(rotated_image, new_rect)
+
 
 def render_side_column(pos, team_info):
     pygame.draw.rect(screen, side_column_background_color, pygame.Rect(pos[0],
@@ -133,7 +141,8 @@ def render_side_column(pos, team_info):
                                                                        side_column_dimensions[0],
                                                                        side_column_dimensions[1]))
 
-    #TODO: Write stuff to render/visualize data related to each team (team_info)
+    # TODO: Write stuff to render/visualize data related to each team (team_info)
+
 
 def render_bottom_row(pos):
     # pygame.draw.rect(screen, side_column_background_color, pygame.Rect(30, 30, 60, 60))
@@ -142,13 +151,15 @@ def render_bottom_row(pos):
                                                                        pos[1],
                                                                        side_column_dimensions[0],
                                                                        side_column_dimensions[1]))
+
+
 def render_leaderboard(pos):
     pygame.draw.rect(screen, leaderboard_background_color, pygame.Rect(pos[0],
                                                                        pos[1],
                                                                        leaderboard_dimensions[0],
                                                                        leaderboard_dimensions[1]))
 
-    #TODO: Write stuff to render/visualize data related to the leaderboard/scoresheet
+    # TODO: Write stuff to render/visualize data related to the leaderboard/scoresheet
 
 
 def nomenclature(n, board, pos):
@@ -185,16 +196,18 @@ def render_board(pos, board, shi):
                                                                            cell_size[index],
                                                                            cell_size[index]))"""
 
-
-            cell_pos = [pos[0]+(x * cell_size[index]), pos[1]+(y * cell_size[index])]
+            cell_pos = [pos[0]+(x * cell_size[index]),
+                        pos[1]+(y * cell_size[index])]
             if x != board_elem_dim[0] and y != board_elem_dim[1]:
                 if board[y][x] != 0:
-                    screen.blit(tiles[nomenclature(board[y][x], board, (x, y))], cell_pos)
+                    screen.blit(
+                        tiles[nomenclature(board[y][x], board, (x, y))], cell_pos)
 
-            #TODO: draw turrents here.
+            # TODO: draw turrents here.
 
             for ship in shi:
-                blitRotateCenter(screen, tiles['GunTurrent2'], ship[0], ship[1](dT))
+                blitRotateCenter(
+                    screen, tiles['GunTurrent2'], ship[0], ship[1](dT))
                 #screen.blit(surf, ship[0])
 
     # Must shift pos-y, pos-x depending on lesser size.
@@ -241,16 +254,17 @@ def render():
     render_side_column([window_size[0]-(side_column_margin+side_column_width),
                         side_column_margin], "team-info")
     render_bottom_row([1500, 1500])
-    render_leaderboard([leaderboard_margin, window_size[1]-(leaderboard_height+leaderboard_margin)])
+    render_leaderboard([leaderboard_margin, window_size[1] -
+                       (leaderboard_height+leaderboard_margin)])
 
     render_board([side_column_width+(side_column_margin*2)+board_margin,
                   board_margin], board1, shi1)
 
     render_board([window_size[0]-(side_column_width+(side_column_margin*2)+board_margin+max_board_dim[0]),
                   board_margin], board2, shi2)
-    
-    #for shipwreck in shipwrecks:
-        #screen.blit(tiles['0010B'], [shipwreck[0](), shipwreck[1]()])
+
+    # for shipwreck in shipwrecks:
+    #screen.blit(tiles['0010B'], [shipwreck[0](), shipwreck[1]()])
     for explosion in explosions:
         screen.blit(tiles['Explosion'], [explosion[0](), explosion[1]()])
         pass
@@ -258,22 +272,25 @@ def render():
     screen.blit(bullet_image, [bullets[0](), bullets[1]()])
     screen.blit(bullet2_image, [bullet2[0](), bullet2[1]()])
 
-
     font = pygame.font.SysFont("Segoe UI", 80)
-    img = font.render('Team-I', True, BackgroundColorRGB)
+    img = font.render(yo.team1_name, True, BackgroundColorRGB)
     img = pygame.transform.rotate(img, 90)
     screen.blit(img, (side_column_margin, side_column_dimensions[1]-500))
 
     font = pygame.font.SysFont("Segoe UI", 80)
-    img = font.render('Team-II', True, BackgroundColorRGB)
+    img = font.render(yo.team2_name, True, BackgroundColorRGB)
     img = pygame.transform.rotate(img, 270)
     # hit_or_miss = font.render(hit_or_miss_bool, True, BackgroundColorRGB)
     # screen.blit(hit_or_miss, (200, 250))
-    screen.blit(img, (window_size[0]-side_column_margin-100, side_column_dimensions[1] - 500))
+    screen.blit(
+        img, (window_size[0]-side_column_margin-100, side_column_dimensions[1] - 500))
+
 
 def load_tiles(tilepath):
     for name in os.listdir(tilepath):
-        tiles[os.path.splitext(name)[0]] = pygame.image.load(tilepath+str(name))
+        tiles[os.path.splitext(name)[0]] = pygame.image.load(
+            tilepath+str(name))
+
 
 def initialize():
     # Only run after updating above variables to your preferences.
@@ -283,7 +300,7 @@ def initialize():
     assert len(board1) == len(board2)
     assert len(board1[0]) == len(board2[0])
 
-    #TODO: Add assertions here to ensure non-negative dimension values
+    # TODO: Add assertions here to ensure non-negative dimension values
 
     # Doing some prelimanary calculations here
     board_elem_dim = [len(board1[0]), len(board1)]
@@ -295,14 +312,16 @@ def initialize():
 
     # RecalculateWindowSizeHere
     global width
-    width = int((side_column_margin*4) + (board_margin*4) + divider_line_thickness + (side_column_width*2) + (max_board_dim[0]*2))
+    width = int((side_column_margin*4) + (board_margin*4) +
+                divider_line_thickness + (side_column_width*2) + (max_board_dim[0]*2))
 
     if side_column_margin > board_margin:
         gmargin = side_column_margin
     else:
         gmargin = board_margin
     global height
-    height = int((leaderboard_margin*2) + leaderboard_height + (len(board1)*cell_size[index]) + gmargin)
+    height = int((leaderboard_margin*2) + leaderboard_height +
+                 (len(board1)*cell_size[index]) + gmargin)
 
     window_size = [width, height]
     screen = pygame.display.set_mode(window_size)
@@ -315,9 +334,8 @@ def initialize():
 
     leaderboard_dimensions = [width-(leaderboard_margin*2), leaderboard_height]
 
-
-
-    assert turrent_cell_size < cell_size[index]  # Ensuring turrents are smaller than ship size.
+    # Ensuring turrents are smaller than ship size.
+    assert turrent_cell_size < cell_size[index]
 
     # Loading tiles
     load_tiles(tilepath1)
@@ -326,7 +344,8 @@ def initialize():
 
     # Resize imported tiles
     for key in tiles.keys():
-        tiles[key] = pygame.transform.scale(tiles[key], [int(cell_size[index]), int(cell_size[index])])
+        tiles[key] = pygame.transform.scale(
+            tiles[key], [int(cell_size[index]), int(cell_size[index])])
 
     # Loading Guns
     load_tiles(OnBoardPath)
@@ -337,34 +356,39 @@ def initialize():
     turrent_cell_size = int(boardsize*cell_size[index]/400)*35
 
     # Resizing Guns
-    tiles['GunTurrent2'] = pygame.transform.scale(tiles['GunTurrent2'], (turrent_cell_size, turrent_cell_size))
-    tiles['bullet'] = pygame.transform.scale(tiles['bullet'], (turrent_cell_size, turrent_cell_size))
+    tiles['GunTurrent2'] = pygame.transform.scale(
+        tiles['GunTurrent2'], (turrent_cell_size, turrent_cell_size))
+    tiles['bullet'] = pygame.transform.scale(
+        tiles['bullet'], (turrent_cell_size, turrent_cell_size))
     tiles['1square'] = pygame.transform.scale(tiles['1square'], (800, 800))
 
     # Calculating Turrent Positions
     # center of turrents will be at the center of ships.
-    global shi1,shi2, shipos1, shipos2
+    global shi1, shi2, shipos1, shipos2
 
-    shipos1 = positionCalculators.calculateShipPositions(ships1, cell_size[index], [side_column_width+(side_column_margin*2)+board_margin, board_margin], turrent_cell_size)
-    shipos2 = positionCalculators.calculateShipPositions(ships2, cell_size[index], [window_size[0]-(side_column_width+(side_column_margin*2)+board_margin+max_board_dim[0]), board_margin], turrent_cell_size)
-
+    shipos1 = positionCalculators.calculateShipPositions(ships1, cell_size[index], [
+                                                         side_column_width+(side_column_margin*2)+board_margin, board_margin], turrent_cell_size)
+    shipos2 = positionCalculators.calculateShipPositions(ships2, cell_size[index], [window_size[0]-(
+        side_column_width+(side_column_margin*2)+board_margin+max_board_dim[0]), board_margin], turrent_cell_size)
 
     for shipos in shipos1:
         shi1.append([shipos, AnimatedValue(0, FPS)])
 
     for shipos in shipos2:
         shi2.append([shipos, AnimatedValue(180, FPS)])
-    #print(shipos1)
-    #print(shipos2)
-    board1_pos = [side_column_width + (side_column_margin * 2) + board_margin, board_margin]
+    # print(shipos1)
+    # print(shipos2)
+    board1_pos = [side_column_width +
+                  (side_column_margin * 2) + board_margin, board_margin]
 
-    bullets = [AnimatedValue(-turrent_cell_size/2, FPS), AnimatedValue((height/2)-(turrent_cell_size/2), FPS)]
-    bullet2 = [AnimatedValue(width+turrent_cell_size/2, FPS), AnimatedValue((height/2)-(turrent_cell_size/2), FPS)]
+    bullets = [AnimatedValue(-turrent_cell_size/2, FPS),
+               AnimatedValue((height/2)-(turrent_cell_size/2), FPS)]
+    bullet2 = [AnimatedValue(width+turrent_cell_size/2, FPS),
+               AnimatedValue((height/2)-(turrent_cell_size/2), FPS)]
     bullet_image = tiles['bulletN']
     bullet2_image = tiles['BulletN2']
 
-
-   #temporary animation blit
+   # temporary animation blit
 
 
 # Everything below is cheap AF (probably have to rewrite all the animation shit)
@@ -386,8 +410,10 @@ The final output screen can be animated by sequenctially and systematically chan
 
 # ---------------------------------------Strike Animation Stuff--------------------------------------------------------
 
+
 def install_bullet():
     pass
+
 
 def generateStrikeStateMachine(anim):
     """
@@ -438,10 +464,10 @@ def generateStrikeStateMachine(anim):
 """
 # ---------------------------------------------------------------------------------------------------------------------
 
-def animation_handler(anim_instruction):
-    global screen, running, clock, count, dT,in_animation
-    dT = clock.tick(FPS) / 1000
 
+def animation_handler(anim_instruction):
+    global screen, running, clock, count, dT, in_animation
+    dT = clock.tick(FPS) / 1000
 
     while in_animation:
         render()
@@ -451,7 +477,8 @@ def animation_handler(anim_instruction):
         pygame.display.update()
         dT = clock.tick(FPS)/1000
 
-### sound fx loading
+
+# sound fx loading
 pygame.mixer.init()
 hit_sound = pygame.mixer.Sound("./Battleship/Assets/sounds/cannon.mp3")
 hit_sound.set_volume(1.4)
@@ -466,6 +493,7 @@ frames = 0
 shoot = True
 setzero = False
 fire_ready = True
+
 
 def hit2(pos, isfromleft):
     #print(f"shipwrecks: {shipwrecks}")
@@ -485,6 +513,8 @@ def hit2(pos, isfromleft):
                 if pos[1] <= ship[1] + ship[3] and pos[1] >= ship[1]:
                     return True
     return False
+
+
 def hit(pos, isfromleft):
     if isfromleft:
         if board2[pos[1]][pos[0]] != 0:
@@ -497,11 +527,13 @@ def hit(pos, isfromleft):
         else:
             return False
 
+
 stop = False
 hit_or_miss_font = pygame.font.Font('freesansbold.ttf', 64)
-hit_or_miss_text = hit_or_miss_font.render("Hit", True, (0,0,0))
+hit_or_miss_text = hit_or_miss_font.render("Hit", True, (0, 0, 0))
 
-def explosion_handler(pos,isfromleft):
+
+def explosion_handler(pos, isfromleft):
     global bullets, fire_ready, bullet_image, stop, hit_or_miss_bool
     stop = False
     if not bullets[0].animated and not bullets[1].animated:
@@ -512,7 +544,7 @@ def explosion_handler(pos,isfromleft):
             bullet_image = tiles['0010B']
             hit_or_miss_bool = "Hit"
             # screen.blit(hit_or_miss_text, (random.randrange(100, 1500), random.randrange(100, 700)))
-            
+
             # pygame.time.wait(1000)
             shipwrecks.append([bullets[0], bullets[1]])
         else:
@@ -527,73 +559,85 @@ def explosion_handler(pos,isfromleft):
         fire_ready = True
         stop = True
         return False
-        #pygame.time.wait(1000)
+        # pygame.time.wait(1000)
         #bullet_image = tiles['trans']
-    
+
     return True
-        #pygame.time.wait(1000)
-        
-    #pygame.time.wait(1000)
+    # pygame.time.wait(1000)
+
+    # pygame.time.wait(1000)
     #fire_ready = True
-    #hit.play()
+    # hit.play()
     #del bullets[0], bullets[1]
     return
 
+
 def fire(pos, board1_pos, board2_pos, isfromleft):
     global bullet_image, fire_ready, bullets, bullet_velocity, cell_size, cell_size_index, bullet2
-    
+
     if fire_ready:
-        ##print(hit(pos,isfromleft))
+        # print(hit(pos,isfromleft))
         fire_ready = False
         #screen.blit(bullet_image, [bullets[0](), bullets[1]()])
-        #pygame.display.update()
+        # pygame.display.update()
         fire_ready = False
         fire_sound.play()
         cannonball.play()
         if isfromleft:
-            bullets = [AnimatedValue(-turrent_cell_size/2, FPS), AnimatedValue((height/2)-(turrent_cell_size/2), FPS)]
+            bullets = [AnimatedValue(-turrent_cell_size/2, FPS),
+                       AnimatedValue((height/2)-(turrent_cell_size/2), FPS)]
             bullet_image = tiles['bulletN']
-            bullets[0].animate(board2_pos[0]+cell_size[cell_size_index]*pos[0], bullet_velocity)
-            bullets[1].animate(board2_pos[1]+cell_size[cell_size_index]*pos[1], bullet_velocity)
+            bullets[0].animate(
+                board2_pos[0]+cell_size[cell_size_index]*pos[0], bullet_velocity)
+            bullets[1].animate(
+                board2_pos[1]+cell_size[cell_size_index]*pos[1], bullet_velocity)
         else:
-            bullets = [AnimatedValue(width+turrent_cell_size/2, FPS), AnimatedValue((height/2)-(turrent_cell_size/2), FPS)]
+            bullets = [AnimatedValue(width+turrent_cell_size/2, FPS),
+                       AnimatedValue((height/2)-(turrent_cell_size/2), FPS)]
             bullet_image = tiles['BulletN2']
-            bullets[0].animate(board1_pos[0]+cell_size[cell_size_index]*pos[0], bullet_velocity)
-            bullets[1].animate(board1_pos[1]+cell_size[cell_size_index]*pos[1], bullet_velocity)
-    
-    explosion_handler(pos,isfromleft)
+            bullets[0].animate(
+                board1_pos[0]+cell_size[cell_size_index]*pos[0], bullet_velocity)
+            bullets[1].animate(
+                board1_pos[1]+cell_size[cell_size_index]*pos[1], bullet_velocity)
+
+    explosion_handler(pos, isfromleft)
     return
-        #bullet1over = True
+    #bullet1over = True
+
 
 font = pygame.font.Font('freesansbold.ttf', 170)
 winner_font = pygame.font.Font('freesansbold.ttf', 64)
 
+
 def winner_text(text):
     global screen
-    winner_text = font.render(text, True, (0,0,0))
+    winner_text = font.render(text, True, (0, 0, 0))
     screen.blit(winner_text, (200, 250))
+
 
 def draw_call(fire_coordinates, isfromleft):
     global screen, running, clock, count, in_animation, bullet_image, frames, board2, bullet1over, shoot, setzero, bullet2_image, fire_ready, stop
-    #animation_instruction is of the following format: [animation_id, animation_info]
-    #if animation_instruction[0] != None:
+    # animation_instruction is of the following format: [animation_id, animation_info]
+    # if animation_instruction[0] != None:
     #    in_animation = True
     #    animation_handler(animation_instruction)
 
     # while True:
     bullet1over = False
 
-    board1_pos = [side_column_width + (side_column_margin * 2) + board_margin, board_margin]
+    board1_pos = [side_column_width +
+                  (side_column_margin * 2) + board_margin, board_margin]
     board2_pos = [window_size[0] - (side_column_width + (side_column_margin * 2) + board_margin + max_board_dim[0]),
-                board_margin]
-
+                  board_margin]
 
     #bullets[0].animate(board2_pos[0]+cell_size[cell_size_index]*3, bullet_velocity)
     #bullets[1].animate(board2_pos[1]+cell_size[cell_size_index]*1, bullet_velocity)
     render()
     # winner_text("Team 1 has won!")
-    hit_or_miss_text = hit_or_miss_font.render(hit_or_miss_bool, True, (0,0,0))
-    screen.blit(hit_or_miss_text, [(window_size[0]/2)-(hit_or_miss_text.get_size()[0]/2), window_size[1]-(leaderboard_height+leaderboard_margin+10)+(hit_or_miss_text.get_size()[1]/2)])
+    hit_or_miss_text = hit_or_miss_font.render(
+        hit_or_miss_bool, True, (0, 0, 0))
+    screen.blit(hit_or_miss_text, [(window_size[0]/2)-(hit_or_miss_text.get_size()[0]/2), window_size[1]-(
+        leaderboard_height+leaderboard_margin+10)+(hit_or_miss_text.get_size()[1]/2)])
     fire(fire_coordinates, board1_pos, board2_pos, isfromleft=isfromleft)
     # winner_text("TEAM1 has won!")
     # fire((1,1), board1_pos, board2_pos, isfromleft=False)
@@ -606,71 +650,3 @@ def draw_call(fire_coordinates, isfromleft):
             quit()
     pygame.display.update()
     clock.tick(FPS)
-
-    return
-    
-    while True:
-        ##print(ships1)
-        render()
-        ### This function runs in every iteration. So, the explosion_handler function is taking in these position values.
-        fire((3,1), board1_pos, board2_pos, isfromleft=True) 
-        fire((1,1), board1_pos, board2_pos, isfromleft=False)
-        #explosion_handler()
-        #fire((9,9), board1_pos, board2_pos)
-            
-
-        """
-        if not bullet1over:
-            if not bullets[0].animated and not bullets[1].animated:
-                
-                hit.play()
-                bullet_image = tiles['Explosion']
-                bullet1over = True
-                
-                if frames > 0 and frames < FPS*0.5*dT:
-                    bullet_image = tiles['Explosion']
-                elif frames > FPS*0.5*dT and frames < FPS*0.525*dT:
-                    bullet_image = tiles['ExplosionLarge']
-                else:
-                    bullet_image = tiles['0010B']
-                    bullet1over = True"""
-                    #board2[1][3] = 0
-        """
-        if bullet1over:
-            #pygame.time.wait(300)
-            if shoot:
-                #fire_sound.play()
-                cannonball.play()
-                bullet2[0].animate(board1_pos[0]+cell_size[cell_size_index]*6, bullet_velocity)
-                bullet2[1].animate(board1_pos[1]+cell_size[cell_size_index]*8, bullet_velocity)
-                
-                shoot = False
-                
-            else:
-                if not bullet2[0].animated and not bullet2[1].animated and not setzero:
-                    miss_hit.play()
-                    frames = 0
-                    setzero = True
-                if setzero:
-                    
-                    #miss_hit.fadeout(100)
-                    bullet2_image = tiles['Explosion']
-                    
-                    
-                    if frames > 0 and frames < FPS * 0.5 * dT:
-                        bullet2_image = tiles['Explosion']
-                    elif frames > FPS * 0.5 * dT and frames < FPS * 0.525 * dT:
-                        bullet2_image = tiles['ExplosionLarge']
-                    else:
-                        bullet2_image = tiles['0010B']"""
-
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-        pygame.display.update()
-        clock.tick(FPS)
-        frames += 1
-
-
-
