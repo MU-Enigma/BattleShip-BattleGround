@@ -126,7 +126,7 @@ for i in range(dim):
         if team1_board[i][j] == 1:
             special_spots.append((i, j))
 team1_special_spot = random.sample(set(special_spots), 2)
-# team1_special_spot = [(4, 3), (4, 4)]
+team1_special_spot = [(4, 3), (4, 4)]
 special_spots = []
 for i in range(dim):
     for j in range(dim):
