@@ -13,7 +13,7 @@ class BattleShip:
     def attack(self):
         x = random.randint(0,9)
         x = 4
-        y = random.randint(0,9)
+        y = random.randint(7,8)
         y = 7
         return (x,y)
 

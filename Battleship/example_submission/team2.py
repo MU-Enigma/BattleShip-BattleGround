@@ -12,7 +12,7 @@ class BattleShip:
 
     def attack(self):
         x = random.randint(0,9)
-        y = random.randint(3,4)
+        y = random.randint(0,9)
         return (x,y)
 
     def hit_or_miss(self, x, y , info):
