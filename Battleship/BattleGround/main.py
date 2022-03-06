@@ -133,6 +133,7 @@ for i in range(dim):
         if team2_board[i][j] == 1:
             special_spots.append((i, j))
 team2_special_spot = random.sample(set(special_spots), 2)
+# team2_special_spot = [(4,8), (4,7)]
 
 animation.team1_special_spots = team1_special_spot
 animation.team2_special_spots = team2_special_spot
@@ -169,6 +170,7 @@ def player1():
             print(response)
 
         team2_special_spot[team2_special_spot.index((x, y))] = None
+
 
     # info = 0 for only hit , 1 for miss, and -1 for out of range shooting, info = 2 for skipping opponent's chance, and info = 3 for Hawkeye Missile Activation
     team1_module.hit_or_miss(x, y, info)

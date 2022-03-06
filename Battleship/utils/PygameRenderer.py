@@ -50,7 +50,7 @@ cell_size = []
 cell_size_index = 0
 dT = 1
 
-shi1 = []  # Each gun turrent will be stored as [position, rotation]
+shi1 = []  # Each gun turrent will be stored as [position, rotation, render_constant]
 shi2 = []
 bullets = []  # same format as gun turrent [[position], rotation]
 bullet2 = []
@@ -205,14 +205,20 @@ def render_board(pos, board, shi):
                         pos[1]+(y * cell_size[index])]
             if x != board_elem_dim[0] and y != board_elem_dim[1]:
                 if board[y][x] != 0:
-                    screen.blit(
-                        tiles[nomenclature(board[y][x], board, (x, y))], cell_pos)
+                    if board[y][x]>=0:
+                        screen.blit(
+                            tiles[nomenclature(board[y][x], board, (x, y))], cell_pos)
+                    else:
+                        screen.blit(tiles["Explosion"], cell_pos)
 
             # TODO: draw turrents here.
 
             for ship in shi:
-                blitRotateCenter(
-                    screen, tiles['GunTurrent2'], ship[0], ship[1](dT))
+                if ship[2]:
+                    if board[ship[3][1]][ship[3][0]] < 0:
+                        ship[2] = False
+                    blitRotateCenter(
+                        screen, tiles['GunTurrent2'], ship[0], ship[1](dT))
                 #screen.blit(surf, ship[0])
 
     # Must shift pos-y, pos-x depending on lesser size.
@@ -377,11 +383,11 @@ def initialize():
     shipos2 = positionCalculators.calculateShipPositions(ships2, cell_size[index], [window_size[0]-(
         side_column_width+(side_column_margin*2)+board_margin+max_board_dim[0]), board_margin], turrent_cell_size)
 
-    for shipos in shipos1:
-        shi1.append([shipos, AnimatedValue(0, FPS)])
+    for shipos, shi in zip(shipos1, ships1):
+        shi1.append([shipos, AnimatedValue(0, FPS), True, shi[0:2]])
 
-    for shipos in shipos2:
-        shi2.append([shipos, AnimatedValue(180, FPS)])
+    for shipos, shi in zip(shipos2, ships2):
+        shi2.append([shipos, AnimatedValue(180, FPS), True, shi[0:2]])
     # print(shipos1)
     # print(shipos2)
     board1_pos = [side_column_width +
@@ -522,54 +528,132 @@ team1_nullified = False
 team2_nullified = False
 team1_hawkeye_activated = False
 team2_hawkeye_activated = False
+
+team1_broken_tiles = []
+team2_broken_tiles = []
+
+team1_warning = 0
+team2_warning = 0
+
+team1_hawkeye_attack_flag = False
+team2_hawkeye_attack_flag = False
+def hawkeye(pos, isfromleft):
+    if isfromleft:
+        for i in range(10):
+            board2[pos[1]][i] = -1
+        for j in range(10):
+            board2[j][pos[0]] = -1
+    else:
+        for i in range(10):
+            board1[pos[1]][i] = -1
+        for j in range(10):
+            board1[j][pos[0]] = -1
+
+
 def explosion_handler(pos, isfromleft):
-    global bullets, fire_ready, bullet_image, stop, hit_or_miss_bool, team1_nullified, team2_nullified, team1_hawkeye_activated, team2_hawkeye_activated
+    global bullets, fire_ready, bullet_image, stop, hit_or_miss_bool, team1_nullified, team2_nullified, team1_hawkeye_activated, team2_hawkeye_activated, team1_broken_tiles, team2_broken_tiles, game_over, winner, team1_hawkeye_attack_flag, team2_hawkeye_attack_flag
+    
     stop = False
     if not bullets[0].animated and not bullets[1].animated:
         #print(f"{pos}-----left: {isfromleft}-----hit:{hit(pos, isfromleft)}")
         ##print(f"{pos}-----left: {isfromleft}-----{hit(pos, isfromleft)}")
         x = True
+        team1_broken_number = len(team1_broken_tiles)
+        team2_broken_number = len(team2_broken_tiles)
+        team1_flag = True
+        team2_flag = True
+
+        if not isfromleft:
+            if team1_broken_number > 2:
+                for i in range(team1_broken_number - 2, team1_broken_number):
+                    if pos != team1_broken_tiles[i]:
+                        team1_flag = False
+                if team1_flag:
+                    hit_or_miss_bool = f"{yo.team1_name} has been warned!"
+                    # print(hit_or_miss_bool)
+                    winner = yo.team1_name
+                    game_over = True
+                    #time.sleep(10)
+        else:
+            if team2_broken_number > 2:
+                for i in range(team2_broken_number - 2, team2_broken_number):
+                    if pos != team2_broken_tiles[i]:
+                        team2_flag = False
+                if team2_flag:
+                    hit_or_miss_bool = f"{yo.team1_name} has been warned!"
+                    # print(hit_or_miss_bool)
+                    winner = yo.team2_name
+                    game_over = True
+                    #time.sleep(10)
+
+
         if not team2_nullified:
             if pos == team1_special_spots[0][::-1]:
-                hit_or_miss_bool = f"{yo.team2_name} nullifed {yo.team1_name}"
-                team2_nullified = True
-                x = False
+                if not isfromleft:
+                    hit_or_miss_bool = f"{yo.team2_name} nullifed {yo.team1_name}"
+                    team2_nullified = True
+                    x = False
         if not team2_hawkeye_activated:
-            if pos == team1_special_spots[1][::-1]:
-                hit_or_miss_bool = f"{yo.team2_name} Hawkeye Activated"
-                team2_hawkeye_activated = True
-                x = False
+            if not isfromleft:
+                if pos == team1_special_spots[1][::-1]:
+                    hit_or_miss_bool = f"{yo.team2_name} Hawkeye Activated"
+                    team2_hawkeye_activated = True
+                    x = False
         if not team1_nullified:
-            if pos == team2_special_spots[0][::-1]:
-                hit_or_miss_bool = f"{yo.team1_name} nullified {yo.team2_name}"
-                team1_nullified = True
-                x = False
+            if isfromleft:
+                if pos == team2_special_spots[0][::-1]:
+                    hit_or_miss_bool = f"{yo.team1_name} nullified {yo.team2_name}"
+                    team1_nullified = True
+                    x = False
         if not team1_hawkeye_activated:
-            if pos == team2_special_spots[1][::-1]:
-                hit_or_miss_bool = f"{yo.team1_name} Hawkeye Activated"
-                team1_hawkeye_activated = True
-                x = False
+            if isfromleft:
+                if pos == team2_special_spots[1][::-1]:
+                    hit_or_miss_bool = f"{yo.team1_name} Hawkeye Activated"
+                    team1_hawkeye_activated = True
+                    x = False
         if hit(pos, isfromleft):
             hit_sound.play()
             bullet_image = tiles['0010B']
             if x:
-                hit_or_miss_bool = "Hit"
+                if isfromleft:
+                    if pos not in team2_broken_tiles:
+                        hit_or_miss_bool = "Hit"
+                    else:
+                        hit_or_miss_bool = "Miss"
+                else:
+                    if pos not in team1_broken_tiles:
+                        hit_or_miss_bool = "Hit"
+                    else:
+                        hit_or_miss_bool = "Miss"
+
             # screen.blit(hit_or_miss_text, (random.randrange(100, 1500), random.randrange(100, 700)))
 
             # pygame.time.wait(1000)
             shipwrecks.append([bullets[0], bullets[1]])
-        else:
+        else:   
             miss_hit.play()
             if x:
                 hit_or_miss_bool = "Miss"
             # screen.blit(hit_or_miss_text, (random.randrange(100, 1500), random.randrange(100, 700)))
             # pygame.time.wait(1000)
+        if team1_hawkeye_attack_flag and isfromleft:
+            hawkeye(pos, isfromleft)
+            team1_hawkeye_attack_flag = False
+        elif team2_hawkeye_attack_flag and not isfromleft:
+            hawkeye(pos, isfromleft)
+            team2_hawkeye_attack_flag = False
+
         bullet_image = tiles['Explosion']
+        # print([bullets[0], bullets[1]], pos)
         explosions.append([bullets[0], bullets[1]])
         # pygame.time.wait(1000)
         pygame.time.set_timer(pygame.USEREVENT, 2000)
         fire_ready = True
         stop = True
+        if isfromleft:
+            team2_broken_tiles.append(pos)
+        else:
+            team1_broken_tiles.append(pos)
         return False
         # pygame.time.wait(1000)
         #bullet_image = tiles['trans']
@@ -620,7 +704,11 @@ def fire(pos, board1_pos, board2_pos, isfromleft):
 font = pygame.font.Font('freesansbold.ttf', 170)
 winner_font = pygame.font.Font('freesansbold.ttf', 64)
 winner = ""
-
+hawk1 = False
+hawk2 = False
+team1_hawk_count = 0
+team2_hawk_count = 0
+count = 0
 def winner_text(text):
     global screen
     winner_text = font.render(text, True, (0, 0, 0))
@@ -628,7 +716,8 @@ def winner_text(text):
 
 
 def draw_call(fire_coordinates, isfromleft):
-    global screen, running, clock, count, in_animation, bullet_image, frames, board2, bullet1over, shoot, setzero, bullet2_image, fire_ready, stop, game_over2, ifl
+    global screen, running, clock, count, in_animation, bullet_image, frames, board2, bullet1over, shoot, setzero, bullet2_image, fire_ready, stop, game_over2, ifl, hawk1, hawk2, team1_hawk_count, team2_hawk_count, team1_hawkeye_attack_flag, team2_hawkeye_attack_flag
+
     # animation_instruction is of the following format: [animation_id, animation_info]
     # if animation_instruction[0] != None:
     #    in_animation = True
@@ -652,7 +741,24 @@ def draw_call(fire_coordinates, isfromleft):
         leaderboard_height+leaderboard_margin+10)+(hit_or_miss_text.get_size()[1]/2)])
     if not game_over:
         fire(fire_coordinates, board1_pos, board2_pos, isfromleft=isfromleft)
+        if isfromleft and team1_hawkeye_activated and not hawk1:
+            hawk1 = True
+            team1_hawk_count+=1
+        elif not isfromleft and team2_hawkeye_activated and not hawk2:
+            hawk2 = True
+            team2_hawk_count+=1
+        elif team1_hawk_count > 0:
+            team1_hawkeye_attack_flag = True
+            team1_hawk_count = 0
+        elif team2_hawk_count > 0:
+            team2_hawkeye_attack_flag = True
+            team2_hawk_count = 0
+
+
+
     if game_over:
+        hit_or_miss_text = hit_or_miss_font.render(
+        hit_or_miss_bool, True, (0, 0, 0))
         winner_text(f"{winner} has won!")
     # winner_text("TEAM1 has won!")
     # fire((1,1), board1_pos, board2_pos, isfromleft=False)
