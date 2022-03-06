@@ -126,7 +126,7 @@ for i in range(dim):
         if team1_board[i][j] == 1:
             special_spots.append((i, j))
 team1_special_spot = random.sample(set(special_spots), 2)
-team1_special_spot = [(4, 1), (3, 1)]
+# team1_special_spot = [(4, 3), (4, 4)]
 special_spots = []
 for i in range(dim):
     for j in range(dim):
@@ -134,8 +134,10 @@ for i in range(dim):
             special_spots.append((i, j))
 team2_special_spot = random.sample(set(special_spots), 2)
 
-# print("TEAM 1 SPL SPOT : " , team1_special_spot)
-# print("TEAM 2 SPL SPOT : " , team2_special_spot)
+animation.team1_special_spots = team1_special_spot
+animation.team2_special_spots = team2_special_spot
+print("TEAM 1 SPL SPOT : " , team1_special_spot)
+print("TEAM 2 SPL SPOT : " , team2_special_spot)
 
 team1_hawkeye_activated = False
 team2_hawkeye_activated = False
@@ -200,14 +202,14 @@ def player2():
             info = 2
             response = f"{team2_name} NULLIFIED {team1_name}"
             print(response)
-            time.sleep(5)
+            #time.sleep(5)
 
         elif team1_special_spot.index((x, y)) == 1:
             info = 3
             team2_hawkeye_activated = True
             response = "HAWKEYE ACTIVATED !! "
             print(response)
-            time.sleep(5)
+            #time.sleep(5)
 
         team1_special_spot[team1_special_spot.index((x, y))] = None
 
