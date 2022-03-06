@@ -70,6 +70,10 @@ board2 = []
 ships1 = []
 ships2 = []
 
+team1_special_spots = []
+team2_special_spots = []
+
+
 onetimecalculations = True
 in_animation = False
 
@@ -293,6 +297,7 @@ def load_tiles(tilepath):
             tilepath+str(name))
 
 
+
 def initialize():
     # Only run after updating above variables to your preferences.
 
@@ -496,25 +501,6 @@ setzero = False
 fire_ready = True
 
 
-def hit2(pos, isfromleft):
-    #print(f"shipwrecks: {shipwrecks}")
-    #print(f"explosions: {explosions}")
-    if isfromleft:
-        ships = ships2
-    else:
-        ships = ships1
-    #print(pos, ships)
-    for ship in ships:
-        if ship[2] == 0:
-            if pos[1] == ship[1]:
-                if pos[0] <= ship[0] + ship[3] and pos[0] >= ship[0]:
-                    return True
-        else:
-            if pos[0] == ship[0]:
-                if pos[1] <= ship[1] + ship[3] and pos[1] >= ship[1]:
-                    return True
-    return False
-
 
 def hit(pos, isfromleft):
     if isfromleft:
@@ -532,25 +518,50 @@ def hit(pos, isfromleft):
 stop = False
 hit_or_miss_font = pygame.font.Font('freesansbold.ttf', 64)
 hit_or_miss_text = hit_or_miss_font.render("Hit", True, (0, 0, 0))
-
-
+team1_nullified = False
+team2_nullified = False
+team1_hawkeye_activated = False
+team2_hawkeye_activated = False
 def explosion_handler(pos, isfromleft):
-    global bullets, fire_ready, bullet_image, stop, hit_or_miss_bool
+    global bullets, fire_ready, bullet_image, stop, hit_or_miss_bool, team1_nullified, team2_nullified, team1_hawkeye_activated, team2_hawkeye_activated
     stop = False
     if not bullets[0].animated and not bullets[1].animated:
         #print(f"{pos}-----left: {isfromleft}-----hit:{hit(pos, isfromleft)}")
         ##print(f"{pos}-----left: {isfromleft}-----{hit(pos, isfromleft)}")
+        x = True
+        if not team2_nullified:
+            if pos == team1_special_spots[0][::-1]:
+                hit_or_miss_bool = f"{yo.team2_name} nullifed {yo.team1_name}"
+                team2_nullified = True
+                x = False
+        if not team2_hawkeye_activated:
+            if pos == team1_special_spots[1][::-1]:
+                hit_or_miss_bool = f"{yo.team2_name} Hawkeye Activated"
+                team2_hawkeye_activated = True
+                x = False
+        if not team1_nullified:
+            if pos == team2_special_spots[0][::-1]:
+                hit_or_miss_bool = f"{yo.team1_name} nullified {yo.team2_name}"
+                team1_nullified = True
+                x = False
+        if not team1_hawkeye_activated:
+            if pos == team2_special_spots[1][::-1]:
+                hit_or_miss_bool = f"{yo.team1_name} Hawkeye Activated"
+                team1_hawkeye_activated = True
+                x = False
         if hit(pos, isfromleft):
             hit_sound.play()
             bullet_image = tiles['0010B']
-            hit_or_miss_bool = "Hit"
+            if x:
+                hit_or_miss_bool = "Hit"
             # screen.blit(hit_or_miss_text, (random.randrange(100, 1500), random.randrange(100, 700)))
 
             # pygame.time.wait(1000)
             shipwrecks.append([bullets[0], bullets[1]])
         else:
             miss_hit.play()
-            hit_or_miss_bool = "Miss"
+            if x:
+                hit_or_miss_bool = "Miss"
             # screen.blit(hit_or_miss_text, (random.randrange(100, 1500), random.randrange(100, 700)))
             # pygame.time.wait(1000)
         bullet_image = tiles['Explosion']
@@ -625,7 +636,6 @@ def draw_call(fire_coordinates, isfromleft):
 
     # while True:
     bullet1over = False
-
     board1_pos = [side_column_width +
                   (side_column_margin * 2) + board_margin, board_margin]
     board2_pos = [window_size[0] - (side_column_width + (side_column_margin * 2) + board_margin + max_board_dim[0]),
@@ -635,6 +645,7 @@ def draw_call(fire_coordinates, isfromleft):
     #bullets[1].animate(board2_pos[1]+cell_size[cell_size_index]*1, bullet_velocity)
     render()
     # winner_text("Team 1 has won!")
+    # print(team1_special_spots)
     hit_or_miss_text = hit_or_miss_font.render(
         hit_or_miss_bool, True, (0, 0, 0))
     screen.blit(hit_or_miss_text, [(window_size[0]/2)-(hit_or_miss_text.get_size()[0]/2), window_size[1]-(
