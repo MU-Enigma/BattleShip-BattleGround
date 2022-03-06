@@ -25,6 +25,9 @@ start_time = time.time()
 # TimeLine
 initial_skirting = 0.5
 
+# end screen variables
+game_over = False
+winner = ""
 
 # Dummy Values for testing purposes
 
@@ -92,6 +95,7 @@ def initialize():
         if ship[4] == 0:
             ship[4] = ship[3]
             ship[3] = 1
+
     for ship in pr.ships2:
         ship[0], ship[1] = ship[1], ship[0]
         if ship[4] == 0:
@@ -103,21 +107,20 @@ def initialize():
     pr.initialize()
 
 
+
 # initialize()
 
 # while pr.running:
 #     pr.draw_call([None, None])
-def winner_text(text):
-    global exit_window
-    pr.winner_text(text)
 
 
-exit_window = False
 
 
 def update(fire, isfromleft):
     while True:
-
+        if game_over:
+            pr.winner = winner
+            pr.game_over = True
         pr.draw_call(fire, isfromleft)
         # print(pr.stop)
         if pr.stop:
