@@ -111,6 +111,7 @@ bullet1over = False
 
 hit_or_miss_bool = ""
 
+game_over = False
 
 def min(l):
     v = l[0]
@@ -607,7 +608,7 @@ def fire(pos, board1_pos, board2_pos, isfromleft):
 
 font = pygame.font.Font('freesansbold.ttf', 170)
 winner_font = pygame.font.Font('freesansbold.ttf', 64)
-
+winner = ""
 
 def winner_text(text):
     global screen
@@ -616,7 +617,7 @@ def winner_text(text):
 
 
 def draw_call(fire_coordinates, isfromleft):
-    global screen, running, clock, count, in_animation, bullet_image, frames, board2, bullet1over, shoot, setzero, bullet2_image, fire_ready, stop
+    global screen, running, clock, count, in_animation, bullet_image, frames, board2, bullet1over, shoot, setzero, bullet2_image, fire_ready, stop, game_over2, ifl
     # animation_instruction is of the following format: [animation_id, animation_info]
     # if animation_instruction[0] != None:
     #    in_animation = True
@@ -638,7 +639,10 @@ def draw_call(fire_coordinates, isfromleft):
         hit_or_miss_bool, True, (0, 0, 0))
     screen.blit(hit_or_miss_text, [(window_size[0]/2)-(hit_or_miss_text.get_size()[0]/2), window_size[1]-(
         leaderboard_height+leaderboard_margin+10)+(hit_or_miss_text.get_size()[1]/2)])
-    fire(fire_coordinates, board1_pos, board2_pos, isfromleft=isfromleft)
+    if not game_over:
+        fire(fire_coordinates, board1_pos, board2_pos, isfromleft=isfromleft)
+    if game_over:
+        winner_text(f"{winner} has won!")
     # winner_text("TEAM1 has won!")
     # fire((1,1), board1_pos, board2_pos, isfromleft=False)
     # if stop:

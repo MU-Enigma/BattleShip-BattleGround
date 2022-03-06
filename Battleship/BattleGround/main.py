@@ -68,9 +68,23 @@ team1_ships = team1_module.set_ships()
 team2_ships = team2_module.set_ships()
 
 
+
 # converting to the board to matrix format
 team1_board = [[0]*10 for i in range(10)]
 team2_board = [[0]*10 for i in range(10)]
+
+for ship in team1_ships: # Adding a redundant 0
+    ship.append(1)
+    ship[4] = ship[3]
+    ship[3] = ship[2]
+    ship[2] = 0
+
+for ship in team2_ships:
+    ship.append(1)
+    ship[4] = ship[3]
+    ship[3] = ship[2]
+    ship[2] = 0
+
 for ship in team1_ships:
     row = ship[0]
     col = ship[1]
@@ -160,10 +174,10 @@ def player1():
     # time.sleep(1)
     if game_over(team2_board):
         winner_text = f"{team1_name} has won !!!"
-        animation.winner_text(winner_text)
-        print(winner_text)
-        time.sleep(10)
-        exit()
+        animation.winner = team1_name
+        animation.game_over = True
+        #time.sleep(10)
+        #exit()
 
     if info == 2:
         player1()
@@ -201,9 +215,11 @@ def player2():
 
     if game_over(team1_board):
         winner_text = f"{team2_name} has won !!!"
-        animation.winner_text(winner_text)
+        animation.winner = team2_name
+        animation.game_over = True
         print(winner_text)
-        exit()
+        #time.sleep(10)
+        #exit()
 
     if info == 2:
         player2()
