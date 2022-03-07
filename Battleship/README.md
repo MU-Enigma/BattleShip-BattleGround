@@ -4,12 +4,12 @@
 
 2. The program should have a `class BattleShip` with the following member variables
     *   `team_name: str` - Name of your team
-    *   `board : list(int)` - 2D list indicating the position of your ships
+    *   `ships : list(list(int))` - 2D list called ships, indicating the position of your ships
     *   `opponent_board : list(int) `- 2D list for tracking enemy ships
     *   `info : int` - Contains details about your attack.
 
 3. Member Functions :
-    * `set_board(self)` - Returns your 2D list of your ship
+    * `set_ships(self)` - Returns your 2D list of your ships
     * `attack(self)` - Return a tuple of two integers. The two integers denotes the position of the board where you want to shoot.
 
     * `hit_or_miss(self, x, y , info)` - Doesn't return anything.
@@ -30,45 +30,31 @@
 
     *   `Nullify` : Pretty Self Explanatory. It nullifies your opponent's next chance and hence gives you double hit.
 
-    *   `Missile Hawkeye` : When you activate missile hawkeye, the next time you hit any co-ordinate say (x,y) , you get to eliminate the entire row and column.
+    *   `Missile Hawkeye` : When you activate the missile hawkeye, the next time you hit any co-ordinate say (x,y) , you get to eliminate the entire row and column (sort of like a plus symbol).
 
     Note : When you activate missile Hawkeye, the very next move is treated as your special attack.
 
 7. The board is a 2D matrix of 1s and 0s. 
 
-    How to Set Up Board : 
+    How to Set Up Your Ships : 
     * There are 5 ships. One of size 3, two of size 4 , and two of size 5.
 
 
-    * The presence of a ship is determined by 1s in the matrix. So, 
+    * The presence of a ship is determined by the ship array you have to input. So, 
     ```
-    board = [
-        [1,1,1],
-        [0,0,0],
-        [1,1,1]
+    ships = [
+		[3, 3, 3, 1],
+		[4, 3, 4, 0],
+		[5, 8, 4, 0],
+		[1, 1, 5, 1],
+		[9, 1, 5, 1]
     ]
     ```
-     means there are two ship of size 3 at the first row and last row. 
-
+    means there are 5 ships.
+    The first two parameters represent the row and column numbers of the first tile of the ship, respectively.
+    The third parameter represents the size of the ship.
+    Lastly, the last parameter represents the orientation of the ship, 0 is for vertical and 1 is for horizontal (the tiles get added towards the right (horizontal) or towards the bottom (vertical)).
     * The ships cannot be placed diagonally, but can be placed horizontally and Vertically only. Note that the ships cannot overlap!
-
-    ```
-    board = [
-        [1,0,0],
-        [0,1,0],
-        [0,0,1]
-    ]
-
-    OR 
-
-    board = [
-        [1,0,0],
-        [0,0,1],
-        [1,0,0]
-    ]
-    ```
-    are not a valid ship position of a ship!
-
 
 
 8. The following link redirects you to a sample code that every team is expected to submit. Check out the valid board settings! [Click here for 1st example code](https://github.com/MU-Enigma/BattleShip-BattleGround/blob/master/Battleship/example_submission/team1.py). [Click here for 2nd example code](https://github.com/MU-Enigma/BattleShip-BattleGround/blob/master/Battleship/example_submission/team2.py). 
