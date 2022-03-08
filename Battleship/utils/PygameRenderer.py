@@ -191,7 +191,7 @@ def nomenclature(n, board, pos):
 def render_board(pos, board, shi):
     index = min(cell_size)
 
-    screen.blit(tiles['1square'], pos)
+    screen.blit(pygame.transform.scale(tiles['1square'], (max_board_dim[0], max_board_dim[1])), pos)
 
     # Drawing cells
     for x in range(board_elem_dim[0]):
@@ -283,18 +283,18 @@ def render():
     screen.blit(bullet_image, [bullets[0](), bullets[1]()])
     screen.blit(bullet2_image, [bullet2[0](), bullet2[1]()])
 
-    font = pygame.font.SysFont("Segoe UI", 80)
+    font = pygame.font.SysFont("Segoe UI", 40)
     img = font.render(yo.team1_name, True, BackgroundColorRGB)
     img = pygame.transform.rotate(img, 90)
-    screen.blit(img, (side_column_margin, side_column_dimensions[1]-500))
+    screen.blit(img, (side_column_margin, side_column_dimensions[1]-300))
 
-    font = pygame.font.SysFont("Segoe UI", 80)
+    font = pygame.font.SysFont("Segoe UI", 40)
     img = font.render(yo.team2_name, True, BackgroundColorRGB)
     img = pygame.transform.rotate(img, 270)
     # hit_or_miss = font.render(hit_or_miss_bool, True, BackgroundColorRGB)
     # screen.blit(hit_or_miss, (200, 250))
     screen.blit(
-        img, (window_size[0]-side_column_margin-100, side_column_dimensions[1] - 500))
+        img, (window_size[0]-side_column_margin-100, side_column_dimensions[1] - 250))
 
 
 def load_tiles(tilepath):
@@ -397,8 +397,10 @@ def initialize():
                AnimatedValue((height/2)-(turrent_cell_size/2), FPS)]
     bullet2 = [AnimatedValue(width+turrent_cell_size/2, FPS),
                AnimatedValue((height/2)-(turrent_cell_size/2), FPS)]
-    bullet_image = tiles['bulletN']
-    bullet2_image = tiles['BulletN2']
+    bullet_image = pygame.transform.scale(tiles['bulletN'], (turrent_cell_size, turrent_cell_size))
+    bullet2_image = pygame.transform.scale(tiles['BulletN2'], (turrent_cell_size, turrent_cell_size))
+
+    tiles["Explosion"] = pygame.transform.scale(tiles["Explosion"], (turrent_cell_size, turrent_cell_size))
 
    # temporary animation blit
 
@@ -701,8 +703,8 @@ def fire(pos, board1_pos, board2_pos, isfromleft):
     #bullet1over = True
 
 
-font = pygame.font.Font('freesansbold.ttf', 170)
-winner_font = pygame.font.Font('freesansbold.ttf', 64)
+font = pygame.font.Font('freesansbold.ttf', 90)
+winner_font = pygame.font.Font('freesansbold.ttf', 30)
 winner = ""
 hawk1 = False
 hawk2 = False

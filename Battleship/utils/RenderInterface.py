@@ -10,7 +10,7 @@ for board matrix use the following convention:
 3 - special regions
 """
 
-pr.max_board_dim = [800, 800]
+pr.max_board_dim = [500, 500]
 pr.side_column_width = 100
 pr.leaderboard_height = 100
 
