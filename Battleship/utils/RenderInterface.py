@@ -18,13 +18,17 @@ ships1 = []
 ships2 = []
 
 # Can override margins/thickness here
-
+team1_special_spots = []
+team2_special_spots = []
 # Internal Timer.
 start_time = time.time()
 
 # TimeLine
 initial_skirting = 0.5
 
+# end screen variables
+game_over = False
+winner = ""
 
 # Dummy Values for testing purposes
 
@@ -77,6 +81,7 @@ def initialize():
     pr.board2 = board2
     pr.ships1 = ships1
     pr.ships2 = ships2
+    
     # pr.ships1 = [[1, 5, 0, 3, 0], # x, y, orientation, length
     #              [2, 5, 0, 3, 1],
     #              [6, 8, 0, 3, 1]]
@@ -92,6 +97,7 @@ def initialize():
         if ship[4] == 0:
             ship[4] = ship[3]
             ship[3] = 1
+
     for ship in pr.ships2:
         ship[0], ship[1] = ship[1], ship[0]
         if ship[4] == 0:
@@ -103,21 +109,28 @@ def initialize():
     pr.initialize()
 
 
+
 # initialize()
 
 # while pr.running:
 #     pr.draw_call([None, None])
-def winner_text(text):
-    global exit_window
-    pr.winner_text(text)
 
 
-exit_window = False
 
-
+print(f"team1 spots: {team1_special_spots}")
+updated_special_spots = False
 def update(fire, isfromleft):
+    global updated_special_spots
     while True:
+        if not updated_special_spots:
+            pr.team1_special_spots = team1_special_spots
+            pr.team2_special_spots = team2_special_spots
+            print("CHECKKKKK")
+            updated_special_spots = True
 
+        if game_over:
+            pr.winner = winner
+            pr.game_over = True
         pr.draw_call(fire, isfromleft)
         # print(pr.stop)
         if pr.stop:

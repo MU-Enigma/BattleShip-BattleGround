@@ -22,9 +22,10 @@ class BattleShip:
             self.opponent_board[x][y] = info
 
 
-ships = [[5, 5, 0, 3, 0],
-                [3, 4, 0, 5, 1],
-                [2, 1, 0, 3, 1]]
+ships = [
+        [4, 3, 2, 1],
+        [5, 5, 2, 1]]
+        
 
 
 
