@@ -68,12 +68,11 @@ team1_ships = team1_module.set_ships()
 team2_ships = team2_module.set_ships()
 
 
-
 # converting to the board to matrix format
 team1_board = [[0]*10 for i in range(10)]
 team2_board = [[0]*10 for i in range(10)]
 
-for ship in team1_ships: # Adding a redundant 0
+for ship in team1_ships:  # Adding a redundant 0
     ship.append(1)
     ship[4] = ship[3]
     ship[3] = ship[2]
@@ -137,8 +136,8 @@ team2_special_spot = random.sample(set(special_spots), 2)
 
 animation.team1_special_spots = team1_special_spot
 animation.team2_special_spots = team2_special_spot
-print("TEAM 1 SPL SPOT : " , team1_special_spot)
-print("TEAM 2 SPL SPOT : " , team2_special_spot)
+print("TEAM 1 SPL SPOT : ", team1_special_spot)
+print("TEAM 2 SPL SPOT : ", team2_special_spot)
 
 team1_hawkeye_activated = False
 team2_hawkeye_activated = False
@@ -152,6 +151,7 @@ def player1():
     x, y = team1_module.attack()
     print(f"{team1_name} attacked at  : " + str((x, y)))
     animation.update((y, x), isfromleft=True)  # Update Animation board
+
     # Updates the board as well as returns hit/miss
     team2_board, info = update_hit(team2_board, x, y)
     if team1_hawkeye_activated:
@@ -171,17 +171,16 @@ def player1():
 
         team2_special_spot[team2_special_spot.index((x, y))] = None
 
-
     # info = 0 for only hit , 1 for miss, and -1 for out of range shooting, info = 2 for skipping opponent's chance, and info = 3 for Hawkeye Missile Activation
     team1_module.hit_or_miss(x, y, info)
 
-    # time.sleep(1)
+    # #time.sleep(1)
     if game_over(team2_board):
         winner_text = f"{team1_name} has won !!!"
         animation.winner = team1_name
         animation.game_over = True
-        #time.sleep(10)
-        #exit()
+        # time.sleep(10)
+        # exit()
 
     if info == 2:
         player1()
@@ -204,14 +203,14 @@ def player2():
             info = 2
             response = f"{team2_name} NULLIFIED {team1_name}"
             print(response)
-            #time.sleep(5)
+            # time.sleep(5)
 
         elif team1_special_spot.index((x, y)) == 1:
             info = 3
             team2_hawkeye_activated = True
             response = "HAWKEYE ACTIVATED !! "
             print(response)
-            #time.sleep(5)
+            # time.sleep(5)
 
         team1_special_spot[team1_special_spot.index((x, y))] = None
 
@@ -222,8 +221,8 @@ def player2():
         animation.winner = team2_name
         animation.game_over = True
         print(winner_text)
-        #time.sleep(10)
-        #exit()
+        # time.sleep(10)
+        # exit()
 
     if info == 2:
         player2()
