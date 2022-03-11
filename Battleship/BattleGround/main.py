@@ -135,6 +135,7 @@ def player1():
     x, y = team1_module.attack()
     print(f"{team1_name} attacked at  : " + str((x, y)))
     animation.update((y, x), isfromleft=True)  # Update Animation board
+
     # Updates the board as well as returns hit/miss
     team2_board, info = update_hit(team2_board, x, y)
     if team1_hawkeye_activated:
@@ -157,12 +158,12 @@ def player1():
     # info = 0 for only hit , 1 for miss, and -1 for out of range shooting, info = 2 for skipping opponent's chance, and info = 3 for Hawkeye Missile Activation
     team1_module.hit_or_miss(x, y, info)
 
-    # time.sleep(1)
+    # #time.sleep(1)
     if game_over(team2_board):
         winner_text = f"{team1_name} has won !!!"
         animation.winner_text(winner_text)
         print(winner_text)
-        time.sleep(10)
+        #time.sleep(10)
         exit()
 
     if info == 2:
@@ -186,14 +187,14 @@ def player2():
             info = 2
             response = f"{team2_name} NULLIFIED {team1_name}"
             print(response)
-            time.sleep(5)
+            # #time.sleep(5)
 
         elif team1_special_spot.index((x, y)) == 1:
             info = 3
             team2_hawkeye_activated = True
             response = "HAWKEYE ACTIVATED !! "
             print(response)
-            time.sleep(5)
+            # #time.sleep(5)
 
         team1_special_spot[team1_special_spot.index((x, y))] = None
 
