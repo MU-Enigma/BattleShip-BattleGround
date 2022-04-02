@@ -1,5 +1,6 @@
 import random
 
+attacked = []
 
 class BattleShip:
     def __init__(self):
@@ -25,8 +26,10 @@ class BattleShip:
 
 ships = [
         [5, 5, 3, 0],
+        [1, 1, 4, 0],
+        [5, 9, 4, 0],
         [3, 4, 5, 1],
-        [2, 1, 3, 1]]
+        [8, 1, 5, 1]]
 
 
 opponent_board = [

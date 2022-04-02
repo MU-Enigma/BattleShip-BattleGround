@@ -132,7 +132,7 @@ for i in range(dim):
         if team2_board[i][j] == 1:
             special_spots.append((i, j))
 team2_special_spot = random.sample(set(special_spots), 2)
-# team2_special_spot = [(4,8), (4,7)]
+#team2_special_spot = [(3,3), (3,4)]
 
 animation.team1_special_spots = team1_special_spot
 animation.team2_special_spots = team2_special_spot
@@ -157,6 +157,7 @@ def player1():
     if team1_hawkeye_activated:
         team1_hawkeye_activated = False
         team2_board = hawkeye_attack(team2_board, x, y)
+        team2.opponent_board = team2_board
     if (x, y) in team2_special_spot:
         if team2_special_spot.index((x, y)) == 0:
             info = 2
@@ -173,6 +174,7 @@ def player1():
 
     # info = 0 for only hit , 1 for miss, and -1 for out of range shooting, info = 2 for skipping opponent's chance, and info = 3 for Hawkeye Missile Activation
     team1_module.hit_or_miss(x, y, info)
+    print(f"player 1: {info}")
 
     # #time.sleep(1)
     if game_over(team2_board):
@@ -197,6 +199,7 @@ def player2():
     if team2_hawkeye_activated:
         team2_hawkeye_activated = False
         team1_board = hawkeye_attack(team1_board, x, y)
+        team1.opponent_board = team1_board
 
     if (x, y) in team1_special_spot:
         if team1_special_spot.index((x, y)) == 0:
@@ -215,6 +218,7 @@ def player2():
         team1_special_spot[team1_special_spot.index((x, y))] = None
 
     team2_module.hit_or_miss(x, y, info)
+    print(f"player 2: {info}")
 
     if game_over(team1_board):
         winner_text = f"{team2_name} has won !!!"

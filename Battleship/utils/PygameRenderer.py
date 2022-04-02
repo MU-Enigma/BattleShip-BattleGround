@@ -34,7 +34,7 @@ tiles = {}
 # Window Control variables
 window_size = [1600, 800]
 window_caption = "Battleship-BattleGround"
-FPS = 75
+FPS = 120
 BackgroundColorRGB = [15, 0, 0]  # [15, 250, 190]
 
 # Runtime Variables
@@ -206,8 +206,13 @@ def render_board(pos, board, shi):
             if x != board_elem_dim[0] and y != board_elem_dim[1]:
                 if board[y][x] != 0:
                     if board[y][x]>=0:
-                        screen.blit(
-                            tiles[nomenclature(board[y][x], board, (x, y))], cell_pos)
+                        #print(cell_pos)
+                        try:
+                            screen.blit(
+                                tiles[nomenclature(board[y][x], board, (x, y))], cell_pos)
+                        except Exception as e:
+                            #print(f"F, pain: {e}")
+                            pass
                     else:
                         screen.blit(tiles["Explosion"], cell_pos)
 
@@ -566,8 +571,8 @@ def explosion_handler(pos, isfromleft):
         team2_flag = True
 
         if not isfromleft:
-            if team1_broken_number > 2:
-                for i in range(team1_broken_number - 2, team1_broken_number):
+            if team1_broken_number > 9:
+                for i in range(team1_broken_number - 9, team1_broken_number):
                     if pos != team1_broken_tiles[i]:
                         team1_flag = False
                 if team1_flag:
@@ -577,8 +582,8 @@ def explosion_handler(pos, isfromleft):
                     game_over = True
                     #time.sleep(10)
         else:
-            if team2_broken_number > 2:
-                for i in range(team2_broken_number - 2, team2_broken_number):
+            if team2_broken_number > 9:
+                for i in range(team2_broken_number - 9, team2_broken_number):
                     if pos != team2_broken_tiles[i]:
                         team2_flag = False
                 if team2_flag:
