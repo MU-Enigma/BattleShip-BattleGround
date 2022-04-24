@@ -7,6 +7,9 @@ import random
 from ..example_submission import team1
 from ..example_submission import team2
 
+from ..Submissions import Ashit_Waghray as team1
+from ..Submissions import bang_rohith_dandi as team2
+
 dim = 10  # dimension of board
 response = ""
 
@@ -14,7 +17,7 @@ response = ""
 def update_hit(board, x, y):
     global response
     info = -1
-    if x > len(board) or y > len(board[0]) or x < -(len(board)) or y < -(len(board[0])):
+    if x >= len(board) or y >= len(board[0]) or x <= -(len(board)) or y <= -(len(board[0])):
         response = "FIRED OUT OF BATTLEZONE"
         print(response)
 
@@ -233,5 +236,9 @@ def player2():
 
 
 while True:
-    player1()
-    player2()
+    try:
+        player1()
+        player2()
+    except Exception as e:
+        print(e)
+        pass

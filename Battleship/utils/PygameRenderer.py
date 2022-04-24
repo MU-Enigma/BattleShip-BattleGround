@@ -571,8 +571,8 @@ def explosion_handler(pos, isfromleft):
         team2_flag = True
 
         if not isfromleft:
-            if team1_broken_number > 9:
-                for i in range(team1_broken_number - 9, team1_broken_number):
+            if team1_broken_number > 33:
+                for i in range(team1_broken_number - 33, team1_broken_number):
                     if pos != team1_broken_tiles[i]:
                         team1_flag = False
                 if team1_flag:
@@ -582,8 +582,8 @@ def explosion_handler(pos, isfromleft):
                     game_over = True
                     #time.sleep(10)
         else:
-            if team2_broken_number > 9:
-                for i in range(team2_broken_number - 9, team2_broken_number):
+            if team2_broken_number > 33:
+                for i in range(team2_broken_number - 33, team2_broken_number):
                     if pos != team2_broken_tiles[i]:
                         team2_flag = False
                 if team2_flag:
